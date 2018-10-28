@@ -33,7 +33,7 @@ module.exports = function(router) {
           data: {},
           error
         };
-        res.status(401).json(jsonResponse);
+        res.status(200).json(jsonResponse);
       } else {
         jsonResponse = {
           message: "The new record was successfully saved.",
