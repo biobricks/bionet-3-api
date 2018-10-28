@@ -281,7 +281,7 @@ describe('Containers', () => {
         creator: "foobarbaz",
         parent: "123",
         lab: "fooLab",
-        name: "foo",
+        name: "foos",
         description: "bar baz quay",
         rows: 1,
         columns: 2,
@@ -299,7 +299,7 @@ describe('Containers', () => {
           .send({
             creator: "foobarbaz",
             parent: "1234",
-            name: "foobar",
+            name: "foobars",
             lab: "fooLabs",
             description: "bar baz quay foo",
             rows: 5,
@@ -322,7 +322,7 @@ describe('Containers', () => {
             res.body.data.should.have.property('updatedAt');
             res.body.data.should.have.property('parent').eql('1234');
             res.body.data.should.have.property('lab').eql('fooLabs');
-            res.body.data.should.have.property('name').eql('foobar');
+            res.body.data.should.have.property('name').eql('foobars');
             res.body.data.should.have.property('description').eql('bar baz quay foo');
             res.body.data.should.have.property('rows').eql(5);
             res.body.data.should.have.property('columns').eql(6);
