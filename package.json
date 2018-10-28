@@ -4,16 +4,39 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "test": "mocha -c --reporter=spec --recursive \"test/**/*.js\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/biobricks/bionet-3-api.git"
   },
   "author": "Matthew Stewart",
+  "contributors": [
+    "Keoni Gandall",
+    "Thomas Smith",
+    "Matthew Stewart"
+  ],
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/biobricks/bionet-3-api/issues"
   },
-  "homepage": "https://github.com/biobricks/bionet-3-api#readme"
+  "homepage": "https://github.com/biobricks/bionet-3-api#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0",
+    "shortid": "^2.2.13"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-bearer-token": "^2.2.0",
+    "jsonwebtoken": "^8.3.0",
+    "moment": "^2.22.2",
+    "mongoose": "^5.3.7",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
 }
