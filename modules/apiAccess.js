@@ -43,21 +43,21 @@ module.exports = {
     if (process.env.NODE_ENV === "test") {
       next();
     } else if (!req.token) {
-      res.status(401).json({
+      res.status(200).json({
         message: "No JWT Found. You do not have access."
       });
     } else {
       jwt.verify(req.token, process.env.JWT_SECRET, (error, decoded) => {
         if (error) {
           console.log(error);
-          res.status(401).json({
+          res.status(200).json({
             message: "Error Decoding JWT. You do not have access."
           });
         } else {
           let userId = decoded.sub;
           User.findOne({ _id: userId }).exec((error, user) => {
             if (error || !user) {
-              res.status(401).json({
+              res.status(200).json({
                 message: "Error finding your user in the DB. You do not have access."
               });
             } else {              
