@@ -2,3 +2,4 @@ language: node_js
 git:
   depth: false
   submodules: false
+after_success: npm run coverage  
