@@ -7,10 +7,10 @@ if (!process.env.JWT_SECRET) {
   require("../config/env.js");
 }
 
-module.exports = function(app, passport) {
+module.exports = function(router, passport) {
 
   // new record
-  app.post("/users/new", adminRequired, (req, res, next) => {
+  router.post("/users/new", adminRequired, (req, res, next) => {
 
     const validationResult = validateSignupForm(req.body);
     if (!validationResult.success) {
@@ -51,7 +51,7 @@ module.exports = function(app, passport) {
   });
 
   // remove record
-  app.post("/users/:recordId/remove", adminOrOwnerRequired, (req, res) => {
+  router.post("/users/:recordId/remove", adminOrOwnerRequired, (req, res) => {
     User.findOneAndDelete(req.params.recordId).exec(error => {
       if (error) {
         jsonResponse = {
@@ -67,7 +67,7 @@ module.exports = function(app, passport) {
   });
 
   // edit record
-  app.post("/users/:recordId/edit", adminOrOwnerRequired, (req, res) => {
+  router.post("/users/:recordId/edit", adminOrOwnerRequired, (req, res) => {
     if (process.env.NODE_ENV === 'test') {
       User.findOne({ _id: req.params.recordId })
       .exec((err, record) => {
@@ -122,7 +122,7 @@ module.exports = function(app, passport) {
   });
 
   // show one record
-  app.get("/users/:recordId", getRecordById, (req, res) => {
+  router.get("/users/:recordId", getRecordById, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data
@@ -131,7 +131,7 @@ module.exports = function(app, passport) {
   });
 
   // list all records
-  app.get("/users", getAllRecords, (req, res) => {
+  router.get("/users", getAllRecords, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data

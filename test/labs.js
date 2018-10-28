@@ -22,7 +22,7 @@ describe('Labs', () => {
   describe('/GET /labs', () => {
     it('it should GET all the labs', (done) => {
       chai.request(server)
-        .get('/labs')
+        .get('/api/v1/labs')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -43,7 +43,7 @@ describe('Labs', () => {
         users: []
       };
       chai.request(server)
-        .post('/labs/new')
+        .post('/api/v1/labs/new')
         .send(lab)
         .end((err, res) => {
           res.should.have.status(200);
@@ -63,7 +63,7 @@ describe('Labs', () => {
         joinRequests: []
       };
       chai.request(server)
-        .post('/labs/new')
+        .post('/api/v1/labs/new')
         .send(lab)
         .end((err, res) => {
           res.should.have.status(200);
@@ -92,7 +92,7 @@ describe('Labs', () => {
         users: []
       });
       lab.save((error, lab) => {
-        let route = `/labs/${lab._id}`;
+        let route = `/api/v1/labs/${lab._id}`;
         chai.request(server)
           .get(route)
           .send(lab)
@@ -124,7 +124,7 @@ describe('Labs', () => {
         users: []
       });
       lab.save((error, lab) => {
-        let route = `/labs/${lab._id}/edit`;
+        let route = `/api/v1/labs/${lab._id}/edit`;
         chai.request(server)
           .post(route)
           .send({
@@ -164,7 +164,7 @@ describe('Labs', () => {
         users: []
       });
       lab.save((error, lab) => {
-        let route = `/labs/${lab._id}/remove`;
+        let route = `/api/v1/labs/${lab._id}/remove`;
         chai.request(server)
           .post(route)
           .end((err, res) => {

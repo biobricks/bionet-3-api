@@ -43,6 +43,7 @@ mongoose.connect(
 
 // instantiate express app
 const app = express();
+const router = express.Router();
 
 // middleware that accepts urlencoded form data
 // https://github.com/expressjs/body-parser#bodyparserurlencodedoptions
@@ -82,29 +83,27 @@ app.use((req, res, next) => {
 });
 
 // static info routes
-require("./routes/static.js")(app);
+require("./routes/static.js")(router);
 
 // authentication routes
-require("./routes/auth.js")(app, passport);
-
-// api routes
-require("./routes/api.js")(app);
+require("./routes/auth.js")(router, passport);
 
 // user routes
-require("./routes/users.js")(app, passport);
+require("./routes/users.js")(router, passport);
 
 // lab routes
-require("./routes/labs.js")(app);
-
+require("./routes/labs.js")(router);
 
 // container routes
-require("./routes/containers.js")(app);
+require("./routes/containers.js")(router);
 
 // virtual routes
-require("./routes/virtuals.js")(app);
+require("./routes/virtuals.js")(router);
 
 // physical routes
-require("./routes/physicals.js")(app);
+require("./routes/physicals.js")(router);
+
+app.use('/api/v1', router);
 
 // launch server
 app.listen(port, () => {

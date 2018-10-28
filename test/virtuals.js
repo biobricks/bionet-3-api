@@ -24,7 +24,7 @@ describe("Virtuals", () => {
     it("it should GET all the virtuals", done => {
       chai
         .request(server)
-        .get("/virtuals")
+        .get("/api/v1/virtuals")
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
@@ -52,7 +52,7 @@ describe("Virtuals", () => {
       };
       chai
         .request(server)
-        .post("/virtuals/new")
+        .post("/api/v1/virtuals/new")
         .send(virtual)
         .end((err, res) => {
           res.should.have.status(200);
@@ -79,7 +79,7 @@ describe("Virtuals", () => {
       };
       chai
         .request(server)
-        .post("/virtuals/new")
+        .post("/api/v1/virtuals/new")
         .send(virtual)
         .end((err, res) => {
           res.should.have.status(200);
@@ -106,7 +106,7 @@ describe("Virtuals", () => {
       };
       chai
         .request(server)
-        .post("/virtuals/new")
+        .post("/api/v1/virtuals/new")
         .send(virtual)
         .end((err, res) => {
           res.should.have.status(200);
@@ -133,7 +133,7 @@ describe("Virtuals", () => {
       };
       chai
         .request(server)
-        .post("/virtuals/new")
+        .post("/api/v1/virtuals/new")
         .send(virtual)
         .end((err, res) => {
           res.should.have.status(200);
@@ -160,7 +160,7 @@ describe("Virtuals", () => {
       };
       chai
         .request(server)
-        .post("/virtuals/new")
+        .post("/api/v1/virtuals/new")
         .send(virtual)
         .end((err, res) => {
           res.should.have.status(200);
@@ -187,7 +187,7 @@ describe("Virtuals", () => {
       };
       chai
         .request(server)
-        .post("/virtuals/new")
+        .post("/api/v1/virtuals/new")
         .send(virtual)
         .end((err, res) => {
           if (err) {
@@ -218,7 +218,7 @@ describe("Virtuals", () => {
       };
       chai
         .request(server)
-        .post("/virtuals/new")
+        .post("/api/v1/virtuals/new")
         .send(virtual)
         .end((err, res) => {
           res.should.have.status(200);
@@ -258,7 +258,7 @@ describe("Virtuals", () => {
           console.log(error);
           done();
         } else {
-          let route = `/virtuals/${virtual._id}`;
+          let route = `/api/v1/virtuals/${virtual._id}`;
           chai
             .request(server)
             .get(route)
@@ -305,7 +305,7 @@ describe("Virtuals", () => {
         if (error) {
           console.log(error);
         }
-        let route = `/virtuals/${virtual._id}/edit`;
+        let route = `/api/v1/virtuals/${virtual._id}/edit`;
         chai
           .request(server)
           .post(route)
@@ -362,7 +362,7 @@ describe("Virtuals", () => {
         datHash: "fooHash"
       });
       virtual.save((error, virtual) => {
-        let route = `/virtuals/${virtual._id}/remove`;
+        let route = `/api/v1/virtuals/${virtual._id}/remove`;
         chai
           .request(server)
           .post(route)

@@ -24,7 +24,7 @@ describe('Physicals', () => {
   describe('/GET /physicals', () => {
     it('it should GET all the physicals', (done) => {
       chai.request(server)
-        .get('/physicals')
+        .get('/api/v1/physicals')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -53,7 +53,7 @@ describe('Physicals', () => {
         datHash: "fooHash" 
       };
       chai.request(server)
-        .post('/physicals/new')
+        .post('/api/v1/physicals/new')
         .send(physical)
         .end((err, res) => {
           res.should.have.status(200);
@@ -79,7 +79,7 @@ describe('Physicals', () => {
         datHash: "fooHash" 
       };
       chai.request(server)
-        .post('/physicals/new')
+        .post('/api/v1/physicals/new')
         .send(physical)
         .end((err, res) => {
           res.should.have.status(200);
@@ -105,7 +105,7 @@ describe('Physicals', () => {
         datHash: "fooHash" 
       };
       chai.request(server)
-        .post('/physicals/new')
+        .post('/api/v1/physicals/new')
         .send(physical)
         .end((err, res) => {
           res.should.have.status(200);
@@ -131,7 +131,7 @@ describe('Physicals', () => {
         datHash: "fooHash" 
       };
       chai.request(server)
-        .post('/physicals/new')
+        .post('/api/v1/physicals/new')
         .send(physical)
         .end((err, res) => {
           res.should.have.status(200);
@@ -157,7 +157,7 @@ describe('Physicals', () => {
         datHash: "fooHash" 
       };
       chai.request(server)
-        .post('/physicals/new')
+        .post('/api/v1/physicals/new')
         .send(physical)
         .end((err, res) => {
           res.should.have.status(200);
@@ -183,7 +183,7 @@ describe('Physicals', () => {
         datHash: "fooHash" 
       };
       chai.request(server)
-        .post('/physicals/new')
+        .post('/api/v1/physicals/new')
         .send(physical)
         .end((err, res) => {
           res.should.have.status(200);
@@ -210,7 +210,7 @@ describe('Physicals', () => {
         datHash: "fooHash" 
       };
       chai.request(server)
-        .post('/physicals/new')
+        .post('/api/v1/physicals/new')
         .send(physical)
         .end((err, res) => {
           res.should.have.status(200);
@@ -254,7 +254,7 @@ describe('Physicals', () => {
           console.log(error); 
           done();
         } else {
-          let route = `/physicals/${physical._id}`;
+          let route = `/api/v1/physicals/${physical._id}`;
           chai.request(server)
             .get(route)
             .send(physical)
@@ -300,7 +300,7 @@ describe('Physicals', () => {
       });
       physical.save((error, physical) => {
         if (error) { console.log(error) }
-        let route = `/physicals/${physical._id}/edit`;
+        let route = `/api/v1/physicals/${physical._id}/edit`;
         chai.request(server)
           .post(route)
           .send({
@@ -355,7 +355,7 @@ describe('Physicals', () => {
         datHash: "fooHash"    
       });
       physical.save((error, physical) => {
-        let route = `/physicals/${physical._id}/remove`;
+        let route = `/api/v1/physicals/${physical._id}/remove`;
         chai.request(server)
           .post(route)
           .end((err, res) => {

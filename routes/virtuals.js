@@ -7,9 +7,9 @@ if (!process.env.JWT_SECRET) {
   require("../config/env.js");
 }
 
-module.exports = function(app) {
+module.exports = function(router) {
   // create new record
-  app.post("/virtuals/new", (req, res) => {
+  router.post("/virtuals/new", (req, res) => {
     let newRecord = new Virtual({
       creator: res.locals.currentUser || req.body.creator,
       name: req.body.name,
@@ -41,7 +41,7 @@ module.exports = function(app) {
   });
 
   // remove record
-  app.post("/virtuals/:recordId/remove", adminRequired, (req, res) => {
+  router.post("/virtuals/:recordId/remove", adminRequired, (req, res) => {
     Virtual.findOneAndDelete(req.params.recordId).exec(error => {
       if (error) {
         jsonResponse = {
@@ -57,7 +57,7 @@ module.exports = function(app) {
   });
 
   // edit record
-  app.post("/virtuals/:recordId/edit", adminRequired, (req, res) => {
+  router.post("/virtuals/:recordId/edit", adminRequired, (req, res) => {
     if (process.env.NODE_ENV === 'test') {
       Virtual.findOne({ _id: req.params.recordId })
         .exec((err, record) => {
@@ -122,7 +122,7 @@ module.exports = function(app) {
   });
 
   // show one record
-  app.get("/virtuals/:recordId", getRecordById, (req, res) => {
+  router.get("/virtuals/:recordId", getRecordById, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data
@@ -131,7 +131,7 @@ module.exports = function(app) {
   });
 
   // list all records
-  app.get("/virtuals", getAllRecords, (req, res) => {
+  router.get("/virtuals", getAllRecords, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data

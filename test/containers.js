@@ -39,7 +39,7 @@ describe('Containers', () => {
   describe('/GET /containers', () => {
     it('it should GET all the containers', (done) => {
       chai.request(server)
-        .get('/containers')
+        .get('/api/v1/containers')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -71,7 +71,7 @@ describe('Containers', () => {
         bgColor: "#cccccc"
       };
       chai.request(server)
-        .post('/containers/new')
+        .post('/api/v1/containers/new')
         .send(container)
         .end((err, res) => {
           res.should.have.status(401);
@@ -98,7 +98,7 @@ describe('Containers', () => {
         bgColor: "#cccccc"
       };
       chai.request(server)
-        .post('/containers/new')
+        .post('/api/v1/containers/new')
         .send(container)
         .end((err, res) => {
           res.should.have.status(401);
@@ -125,7 +125,7 @@ describe('Containers', () => {
         bgColor: "#cccccc"
       };
       chai.request(server)
-        .post('/containers/new')
+        .post('/api/v1/containers/new')
         .send(container)
         .end((err, res) => {
           res.should.have.status(401);
@@ -152,7 +152,7 @@ describe('Containers', () => {
         bgColor: "#cccccc" 
       };
       chai.request(server)
-        .post('/containers/new')
+        .post('/api/v1/containers/new')
         .send(container)
         .end((err, res) => {
           res.should.have.status(401);
@@ -179,7 +179,7 @@ describe('Containers', () => {
         bgColor: "#cccccc" 
       };
       chai.request(server)
-        .post('/containers/new')
+        .post('/api/v1/containers/new')
         .send(container)
         .end((err, res) => {
           res.should.have.status(401);
@@ -195,7 +195,7 @@ describe('Containers', () => {
       let container = exampleContainer;
       container.name = shortid.generate();
       chai.request(server)
-        .post('/containers/new')
+        .post('/api/v1/containers/new')
         .send(container)
         .end((err, res) => {
           res.should.have.status(200);
@@ -243,7 +243,7 @@ describe('Containers', () => {
           console.log(error); 
           done();
         } else {
-          let route = `/containers/${container._id}`;
+          let route = `/api/v1/containers/${container._id}`;
           chai.request(server)
             .get(route)
             .send(container)
@@ -293,7 +293,7 @@ describe('Containers', () => {
       });
       container.save((error, container) => {
         if (error) { console.log(error) }
-        let route = `/containers/${container._id}/edit`;
+        let route = `/api/v1/containers/${container._id}/edit`;
         chai.request(server)
           .post(route)
           .send({
@@ -354,7 +354,7 @@ describe('Containers', () => {
         bgColor: "#cccccc"
       });
       container.save((error, container) => {
-        let route = `/containers/${container._id}/remove`;
+        let route = `/api/v1/containers/${container._id}/remove`;
         chai.request(server)
           .post(route)
           .end((err, res) => {

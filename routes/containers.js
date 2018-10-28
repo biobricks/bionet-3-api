@@ -7,9 +7,9 @@ if (!process.env.JWT_SECRET) {
   require("../config/env.js");
 }
 
-module.exports = function(app) {
+module.exports = function(router) {
   // create new record
-  app.post("/containers/new", adminRequired, (req, res) => {
+  router.post("/containers/new", adminRequired, (req, res) => {
     let newRecord = new Container({
       creator: req.body.creator,
       parent: req.body.parent || null,
@@ -45,7 +45,7 @@ module.exports = function(app) {
   });
 
   // remove record
-  app.post("/containers/:recordId/remove", adminRequired, (req, res) => {
+  router.post("/containers/:recordId/remove", adminRequired, (req, res) => {
     Container.findOneAndDelete(req.params.recordId).exec(error => {
       if (error) {
         jsonResponse = {
@@ -61,7 +61,7 @@ module.exports = function(app) {
   });
 
   // edit record
-  app.post("/containers/:recordId/edit", adminRequired, (req, res) => {
+  router.post("/containers/:recordId/edit", adminRequired, (req, res) => {
     if (process.env.NODE_ENV === 'test') {
       Container.findOne({ _id: req.params.recordId })
         .exec((err, record) => {
@@ -131,7 +131,7 @@ module.exports = function(app) {
   });
 
   // show one record
-  app.get("/containers/:recordId", getRecordById, (req, res) => {
+  router.get("/containers/:recordId", getRecordById, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data,
@@ -141,7 +141,7 @@ module.exports = function(app) {
   });
 
   // list all records
-  app.get("/containers", getAllRecords, (req, res) => {
+  router.get("/containers", getAllRecords, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data

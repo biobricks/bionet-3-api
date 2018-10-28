@@ -23,7 +23,7 @@ describe('Users', () => {
   describe('/GET /users', () => {
     it('it should GET all the users', (done) => {
       chai.request(server)
-        .get('/users')
+        .get('/api/v1/users')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -45,7 +45,7 @@ describe('Users', () => {
         email: "foo@example.com"
       };
       chai.request(server)
-        .post('/users/new')
+        .post('/api/v1/users/new')
         .send(user)
         .end((err, res) => {
           res.should.have.status(400);
@@ -64,7 +64,7 @@ describe('Users', () => {
         email: "foo@example.com"
       };
       chai.request(server)
-        .post('/users/new')
+        .post('/api/v1/users/new')
         .send(user)
         .end((err, res) => {
           res.should.have.status(400);
@@ -83,7 +83,7 @@ describe('Users', () => {
         name: "Foo Bar"
       };
       chai.request(server)
-        .post('/users/new')
+        .post('/api/v1/users/new')
         .send(user)
         .end((err, res) => {
           res.should.have.status(400);
@@ -104,7 +104,7 @@ describe('Users', () => {
         imageUrl: "http://example.com/examplepicture"
       };
       chai.request(server)
-        .post('/users/new')
+        .post('/api/v1/users/new')
         .send(user)
         .end((err, res) => {
           res.should.have.status(200);
@@ -134,7 +134,7 @@ describe('Users', () => {
         imageUrl: "http://example.com/examplepicture"
       });
       user.save((error, user) => {
-        let route = `/users/${user._id}`;
+        let route = `/api/v1/users/${user._id}`;
         chai.request(server)
           .get(route)
           .send(user)
@@ -168,7 +168,7 @@ describe('Users', () => {
         imageUrl: "http://example.com/examplepicture"
       });
       user.save((error, user) => {
-        let route = `/users/${user._id}/edit`;
+        let route = `/api/v1/users/${user._id}/edit`;
         chai.request(server)
           .post(route)
           .send({
@@ -208,7 +208,7 @@ describe('Users', () => {
         email: "foo@example.com"
       });
       user.save((error, user) => {
-        let route = `/users/${user._id}/remove`;
+        let route = `/api/v1/users/${user._id}/remove`;
         chai.request(server)
           .post(route)
           .end((err, res) => {

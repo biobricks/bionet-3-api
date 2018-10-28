@@ -9,10 +9,10 @@ if (!process.env.JWT_SECRET) {
   require("../config/env.js");
 }
 
-module.exports = function(app) {
+module.exports = function(router) {
   
   // create new record
-  app.post("/labs/new", userRequired, (req, res) => {
+  router.post("/labs/new", userRequired, (req, res) => {
     let users = res.locals.currentUser ? [`${res.locals.currentUser._id}`] : [`${req.body.creator}`];
     let newRecord = new Lab({
       name: req.body.name,
@@ -44,7 +44,7 @@ module.exports = function(app) {
   });
 
   // show breadcrumbs path for container
-  app.get("/labs/:recordId/container/:containerId", (req, res) => {
+  router.get("/labs/:recordId/container/:containerId", (req, res) => {
 
     getPathToLab(req.params.recordId, req.params.containerId, Container, (error, path) => {
       if (error) { console.log(error); }
@@ -54,7 +54,7 @@ module.exports = function(app) {
   });
 
   // remove record
-  app.post("/labs/:recordId/remove", adminRequired, (req, res) => {
+  router.post("/labs/:recordId/remove", adminRequired, (req, res) => {
     Lab.findOneAndDelete(req.params.recordId).exec(error => {
       if (error) {
         jsonResponse = {
@@ -70,7 +70,7 @@ module.exports = function(app) {
   });
 
   // edit record
-  app.post("/labs/:recordId/edit", adminRequired, (req, res) => {
+  router.post("/labs/:recordId/edit", adminRequired, (req, res) => {
     Lab.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
       record.name = req.body.name;
@@ -101,7 +101,7 @@ module.exports = function(app) {
   });
 
   // edit record
-  app.post("/labs/:recordId/membership", (req, res) => {
+  router.post("/labs/:recordId/membership", (req, res) => {
     Lab.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
       record.users = req.body.users || record.users;
@@ -126,7 +126,7 @@ module.exports = function(app) {
   });
 
   // show one record
-  app.get("/labs/:recordId", getRecordById, (req, res) => {
+  router.get("/labs/:recordId", getRecordById, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data,
@@ -136,7 +136,7 @@ module.exports = function(app) {
   });
 
   // list all records
-  app.get("/labs", getAllRecords, (req, res) => {
+  router.get("/labs", getAllRecords, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data

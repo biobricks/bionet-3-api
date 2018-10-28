@@ -9,9 +9,9 @@ if (!process.env.JWT_SECRET) {
   require("../config/env.js");
 }
 
-module.exports = function(app) {
+module.exports = function(router) {
   // create new record
-  app.post("/physicals/new", adminRequired, (req, res) => {
+  router.post("/physicals/new", adminRequired, (req, res) => {
     let newRecord = new Physical({
       virtual: req.body.virtual,
       creator: res.locals.currentUser || req.body.creator,
@@ -46,7 +46,7 @@ module.exports = function(app) {
   });
 
   // remove record
-  app.post("/physicals/:recordId/remove", adminRequired, (req, res) => {
+  router.post("/physicals/:recordId/remove", adminRequired, (req, res) => {
     Physical.findOneAndDelete(req.params.recordId).exec(error => {
       if (error) {
         jsonResponse = {
@@ -62,7 +62,7 @@ module.exports = function(app) {
   });
 
   // edit record
-  app.post("/physicals/:recordId/edit", adminRequired, (req, res) => {
+  router.post("/physicals/:recordId/edit", adminRequired, (req, res) => {
     if (process.env.NODE_ENV === 'test') {
       Physical.findOne({ _id: req.params.recordId })
         .exec((err, record) => {
@@ -134,7 +134,7 @@ module.exports = function(app) {
   });
 
   // show one record
-  app.get("/physicals/:recordId", getRecordById, (req, res) => {
+  router.get("/physicals/:recordId", getRecordById, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data
@@ -143,7 +143,7 @@ module.exports = function(app) {
   });
 
   // list all records
-  app.get("/physicals", getAllRecords, (req, res) => {
+  router.get("/physicals", getAllRecords, (req, res) => {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data
