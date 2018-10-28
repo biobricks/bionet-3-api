@@ -6,8 +6,6 @@ In Development. A Node Express Server that interfaces with the [Bionet 3 Client]
 ### Requirements
 Requires [git](https://git-scm.com/downloads) and [node](https://nodejs.org/en/download/) both be installed and configured on your local environment.
 
-### Install Serve
-``` npm install -g serve ```
 
 ### Clone
 From your terminal:
@@ -38,9 +36,9 @@ process.env.JWT_SECRET = 'mySuperSecretPasswordPhrase';
 npm install
 ```
 
-### Run
+### Start Server
 ```
-npm start
+node server
 ```
 
 ### Run Tests
