@@ -1,4 +1,4 @@
-# BioNet 3 API
+# BioNet 3 API [![Build Status](https://travis-ci.org/biobricks/bionet-3-api.svg?branch=master)](https://travis-ci.org/biobricks/bionet-3-api)
 In Development. A Node Express Server that interfaces with the [Bionet 3 Client](https://github.com/biobricks/bionet-3-client).
 
 ## Install
