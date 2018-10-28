@@ -3,6 +3,12 @@ In Development. A Node Express Server that interfaces with the [Bionet 3 Client]
 
 ## Install
 
+### Requirements
+Requires [git](https://git-scm.com/downloads) and [node](https://nodejs.org/en/download/) both be installed and configured on your local environment.
+
+### Install Serve
+``` npm install -g serve ```
+
 ### Clone
 From your terminal:
 ```
