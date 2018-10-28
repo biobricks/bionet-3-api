@@ -15,11 +15,8 @@ const userSchema = mongoose.Schema({
 	imageUrl: String,
 });
 
-userSchema.methods.createdFromNow = function() {
-    return moment(this.createdAt).fromNow();
-};
-
 userSchema.methods.comparePassword = function(password, callback) {
+	/* istanbul ignore next */
 	bcrypt.compare(password, this.password, callback);
 };
 
@@ -30,9 +27,11 @@ userSchema.pre('save', function saveHook(next) {
   	//if (!user.isModified('password')) return next();
 
 		return bcrypt.genSalt((saltError, salt) => {
+			/* istanbul ignore if  */
 			if (saltError) { return next(saltError); }
 
 			return bcrypt.hash(user.password, salt, (hashError, hash) => {
+				/* istanbul ignore if  */
 				if (hashError) { return next(hashError); }
 
 				// replace a password string with hash value

@@ -22,7 +22,8 @@ const exampleContainer = {
   locations: [],
   category: "Freezer",
   datName: "fooDat",
-  datHash: "fooHash"  
+  datHash: "fooHash",
+  bgColor: "#cccccc" 
 };
 
 chai.use(chaiHttp);
@@ -66,13 +67,14 @@ describe('Containers', () => {
         locations: [],
         category: "Freezer",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        bgColor: "#cccccc"
       };
       chai.request(server)
         .post('/containers/new')
         .send(container)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(401);
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
@@ -92,13 +94,14 @@ describe('Containers', () => {
         locations: [],
         category: "Freezer",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        bgColor: "#cccccc"
       };
       chai.request(server)
         .post('/containers/new')
         .send(container)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(401);
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
@@ -118,13 +121,14 @@ describe('Containers', () => {
         locations: [],
         category: "Freezer",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        bgColor: "#cccccc"
       };
       chai.request(server)
         .post('/containers/new')
         .send(container)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(401);
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
@@ -144,13 +148,14 @@ describe('Containers', () => {
         locations: [],
         category: "Freezer",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        bgColor: "#cccccc" 
       };
       chai.request(server)
         .post('/containers/new')
         .send(container)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(401);
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
@@ -170,13 +175,14 @@ describe('Containers', () => {
         locations: [],
         category: "Freezer",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        bgColor: "#cccccc" 
       };
       chai.request(server)
         .post('/containers/new')
         .send(container)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(401);
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
@@ -194,10 +200,13 @@ describe('Containers', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.should.have.property('message');
+          res.body.should.have.property('message').eql('The new record was successfully saved.');
           res.body.should.have.property('data');
           res.body.data.should.be.a('object');
           res.body.data.should.have.property('creator');
+          res.body.data.should.have.property('createdAt');
+          res.body.data.should.have.property('updatedAt');
+          res.body.data.should.have.property('lab');
           res.body.data.should.have.property('parent');
           res.body.data.should.have.property('name');
           res.body.data.should.have.property('description');
@@ -205,6 +214,9 @@ describe('Containers', () => {
           res.body.data.should.have.property('columns');
           res.body.data.should.have.property('locations');
           res.body.data.should.have.property('category');
+          res.body.data.should.have.property('datName');
+          res.body.data.should.have.property('datHash'); 
+          res.body.data.should.have.property('bgColor');          
           done();
         });
     });    
@@ -223,7 +235,8 @@ describe('Containers', () => {
         locations: [],
         category: "Freezer",
         datName: "fooDat",
-        datHash: "fooHash"         
+        datHash: "fooHash",
+        bgColor: "#cccccc"
       });
       container.save((error, container) => {
         if (error) { 
@@ -238,10 +251,12 @@ describe('Containers', () => {
               if (err) { console.log(err) }
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('message');
+              res.body.should.have.property('message').eql('The record was successfully retrieved.');
               res.body.should.have.property('data');
               res.body.data.should.be.a('object');
               res.body.data.should.have.property('creator');
+              res.body.data.should.have.property('createdAt');
+              res.body.data.should.have.property('updatedAt');              
               res.body.data.should.have.property('parent');
               res.body.data.should.have.property('lab');
               res.body.data.should.have.property('name');
@@ -252,6 +267,7 @@ describe('Containers', () => {
               res.body.data.should.have.property('category');
               res.body.data.should.have.property('datName');
               res.body.data.should.have.property('datHash');
+              res.body.data.should.have.property('bgColor');
               done();
             });
           }    
@@ -269,10 +285,11 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
+        locations: [[1,2]],
         category: "Freezer",
         datName: "fooDat",
-        datHash: "fooHash"        
+        datHash: "fooHash",
+        bgColor: "#dddddd"      
       });
       container.save((error, container) => {
         if (error) { console.log(error) }
@@ -287,28 +304,33 @@ describe('Containers', () => {
             description: "bar baz quay foo",
             rows: 5,
             columns: 6,
-            locations: [],
+            locations: [[3,4]],
             category: "Well",
             datName: "fooDatData",
-            datHash: "SADHJKASHDKJASKDKD"        
+            datHash: "SADHJKASHDKJASKDKD",
+            bgColor: "#cccccc"   
           })
           .end((err, res) => {
             if (err) { console.log(err) }
             res.should.have.status(200);
             res.body.should.be.a('object');
-            res.body.should.have.property('message');
+            res.body.should.have.property('message').eql('The updated record was successfully saved.');
             res.body.should.have.property('data');
             res.body.data.should.be.a('object');
             res.body.data.should.have.property('creator').eql('foobarbaz');
+            res.body.data.should.have.property('createdAt');
+            res.body.data.should.have.property('updatedAt');
             res.body.data.should.have.property('parent').eql('1234');
             res.body.data.should.have.property('lab').eql('fooLabs');
             res.body.data.should.have.property('name').eql('foobar');
             res.body.data.should.have.property('description').eql('bar baz quay foo');
             res.body.data.should.have.property('rows').eql(5);
             res.body.data.should.have.property('columns').eql(6);
+            res.body.data.should.have.property('locations').eql([[3,4]]);
             res.body.data.should.have.property('category').eql('Well');
             res.body.data.should.have.property('datName').eql('fooDatData');
             res.body.data.should.have.property('datHash').eql('SADHJKASHDKJASKDKD');
+            res.body.data.should.have.property('bgColor').eql('#cccccc');
             done();
           });
       });
@@ -328,7 +350,8 @@ describe('Containers', () => {
         locations: [],
         category: "Freezer",
         datName: "fooDatData",
-        datHash: "SADHJKASHDKJASKDKD"
+        datHash: "SADHJKASHDKJASKDKD",
+        bgColor: "#cccccc"
       });
       container.save((error, container) => {
         let route = `/containers/${container._id}/remove`;

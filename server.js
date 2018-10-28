@@ -6,6 +6,7 @@ const bearerToken = require("express-bearer-token");
 const jwt = require("jsonwebtoken");
 
 // load the config file if no database unique resource identifier is present
+/* istanbul ignore else  */
 if (!process.env.DB_URI) {
   require("./config/env.js");
 }
@@ -18,6 +19,7 @@ let databaseConnectionString = `mongodb://${process.env.DB_USERNAME}:${
   process.env.DB_PASSWORD
 }@`;
 
+/* istanbul ignore else  */
 if (process.env.NODE_ENV === "test") {
   databaseConnectionString += `${process.env.DB_TEST_URI}`;
 } else {

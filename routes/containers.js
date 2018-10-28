@@ -20,6 +20,8 @@ module.exports = function(app) {
       columns: req.body.columns,
       locations: req.body.locations,
       category: req.body.category,
+      datName: req.body.datName,
+      datHash: req.body.datHash,
       bgColor: req.body.bgColor
     });
     newRecord.save((error, data) => {
@@ -30,14 +32,14 @@ module.exports = function(app) {
           data: {},
           error
         };
-        res.json(jsonResponse);
+        res.status(401).json(jsonResponse);
       } else {
         jsonResponse = {
           message: "The new record was successfully saved.",
           data: data,
           error: {}
         };
-        res.json(jsonResponse);
+        res.status(200).json(jsonResponse);
       }
     });
   });

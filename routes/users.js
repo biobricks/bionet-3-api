@@ -136,7 +136,7 @@ module.exports = function(app, passport) {
       message: res.locals.message,
       data: res.locals.data
     };
-    res.json(jsonResponse);
+    res.status(200).json(jsonResponse);
   });
 };
 

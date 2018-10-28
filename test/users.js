@@ -27,7 +27,7 @@ describe('Users', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.should.have.property('message');
+          res.body.should.have.property('message').eql('The records were successfully retrieved.');
           res.body.should.have.property('data');
           res.body.message.should.be.a('string');
           res.body.data.should.be.a('array');
@@ -112,9 +112,13 @@ describe('Users', () => {
           res.body.should.have.property('message');
           res.body.should.have.property('data');
           res.body.data.should.be.a('object');
+          res.body.data.should.have.property('createdAt');
+          res.body.data.should.have.property('updatedAt');
           res.body.data.should.have.property('username');
           res.body.data.should.have.property('name');
           res.body.data.should.have.property('email');
+          res.body.data.should.have.property('isAdmin');
+          res.body.data.should.have.property('imageUrl');
           done();
         });
     });            
@@ -141,11 +145,12 @@ describe('Users', () => {
             res.body.should.have.property('message');
             res.body.should.have.property('data');
             res.body.data.should.be.a('object');
+            res.body.data.should.have.property('createdAt');
+            res.body.data.should.have.property('updatedAt');
             res.body.data.should.have.property('username');
             res.body.data.should.have.property('name');
             res.body.data.should.have.property('email');
             res.body.data.should.have.property('isAdmin');
-            res.body.data.should.have.property('createdAt');
             res.body.data.should.have.property('imageUrl');
             done();
           });
@@ -181,11 +186,12 @@ describe('Users', () => {
             res.body.should.have.property('message');
             res.body.should.have.property('data');
             res.body.data.should.be.a('object');
+            res.body.data.should.have.property('createdAt');
+            res.body.data.should.have.property('updatedAt');
             res.body.data.should.have.property('username').eql("1234");
             res.body.data.should.have.property('name').eql("foo2");
             res.body.data.should.have.property('email').eql("foo@example.com2");
             res.body.data.should.have.property('isAdmin').eql(true);
-            res.body.data.should.have.property('createdAt');
             res.body.data.should.have.property('imageUrl').eql("http://example.com/examplepicture2");
             done();
           });
