@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "nyc mocha --exit",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "seed": "./lib/seed.js"
   },
   "repository": {
     "type": "git",

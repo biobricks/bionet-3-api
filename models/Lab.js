@@ -12,7 +12,7 @@ const modelSchema = mongoose.Schema({
   users        : [{ type: String, ref: "User"}],
   joinRequests : [{ type: String, ref: "User"}],
   datName      : { type: String, default: "" },
-  datKey      : { type: String, default: "" }
+  datKey       : { type: String, default: "" }
 });
 
 
