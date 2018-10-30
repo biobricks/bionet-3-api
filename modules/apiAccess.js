@@ -18,7 +18,7 @@ module.exports = {
           });
         } else {
           let userId = decoded.sub;
-          User.findOne({ _id: userId }).exec((error, user) => {
+          User.findOne({ _id: userId }, {password: 0}).exec((error, user) => {
             if (error || !user) {
               res.status(401).json({
                 message: "You do not have access."
@@ -55,7 +55,7 @@ module.exports = {
           });
         } else {
           let userId = decoded.sub;
-          User.findOne({ _id: userId }).exec((error, user) => {
+          User.findOne({ _id: userId }, {password: 0}).exec((error, user) => {
             if (error || !user) {
               res.status(401).json({
                 message: "Error finding your user in the DB. You do not have access."
@@ -85,7 +85,7 @@ module.exports = {
           });
         } else {
           let userId = decoded.sub;
-          User.findOne({ _id: userId }).exec((error, user) => {
+          User.findOne({ _id: userId },{password: 0}).exec((error, user) => {
             if (error || !user) {
               res.status(401).json({
                 message: "You do not have access."
