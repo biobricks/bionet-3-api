@@ -156,6 +156,7 @@ function getAllRecords(req, res, next) {
     });
   } else {
     Virtual.find({}, {}, { sort: { name: 1 } })
+    .populate('creator')
     .exec((error, data) => {
       if (error) {
         res.locals.message =
@@ -187,6 +188,7 @@ function getRecordById(req, res, next) {
   } else {
     Virtual
     .findOne({'_id': req.params.recordId})
+    .populate('creator')
     .exec((error, data) => {
       if(error) {
         res.locals.message = "There was a problem with retrieving the record.";
