@@ -8,6 +8,7 @@ const modelSchema = mongoose.Schema({
   creator: { type: String, ref: "User", required: true },
   createdAt: { type: String, default: new Date() },
   updatedAt: { type: String, default: new Date() },
+  lab: { type: String, ref: "Lab", required: true },
   parent: { type: String, ref: "Container", required: true },
   parentRow: { type: Number, required: true },
   parentColumn: { type: Number, required: true },

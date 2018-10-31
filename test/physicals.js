@@ -42,6 +42,7 @@ describe('Physicals', () => {
     it('it should not POST a physical without virtual field', (done) => {
       let physical = {
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         parentColumn: 1,
@@ -68,6 +69,7 @@ describe('Physicals', () => {
     it('it should not POST a physical without creator field', (done) => {
       let physical = {
         virtual: "exampleVirtual",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         parentColumn: 1,
@@ -95,6 +97,7 @@ describe('Physicals', () => {
       let physical = {
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         parentColumn: 1,
@@ -121,6 +124,7 @@ describe('Physicals', () => {
       let physical = {
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parentRow: 1,
         parentColumn: 1,
         rowSpan: 1,
@@ -147,6 +151,7 @@ describe('Physicals', () => {
       let physical = {
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentColumn: 1,
         rowSpan: 1,
@@ -173,6 +178,7 @@ describe('Physicals', () => {
       let physical = {
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         rowSpan: 1,
@@ -199,6 +205,7 @@ describe('Physicals', () => {
       let physical = {
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         parentColumn: 1,
@@ -222,6 +229,7 @@ describe('Physicals', () => {
           res.body.data.should.have.property('creator');
           res.body.data.should.have.property('name');
           res.body.data.should.have.property('description');
+          res.body.data.should.have.property('lab');
           res.body.data.should.have.property('parent');
           res.body.data.should.have.property('parentRow');
           res.body.data.should.have.property('parentColumn');
@@ -239,6 +247,7 @@ describe('Physicals', () => {
       let physical = new Physical({
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         parentColumn: 1,
@@ -288,6 +297,7 @@ describe('Physicals', () => {
       let physical = new Physical({
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         parentColumn: 1,
@@ -306,6 +316,7 @@ describe('Physicals', () => {
           .send({
             virtual: "exampleVirtual2",
             creator: "exampleUser2",
+            lab: "exampleLab2",
             parent: "exampleContainer2",
             parentRow: 2,
             parentColumn: 2,
@@ -327,6 +338,8 @@ describe('Physicals', () => {
             res.body.data.should.have.property('creator').eql('exampleUser2');
             res.body.data.should.have.property('name').eql('foo2');
             res.body.data.should.have.property('description').eql('bar baz quay2');
+            res.body.data.should.have.property('lab').eql('exampleLab2');
+            res.body.data.should.have.property('parent').eql('exampleContainer2');
             res.body.data.should.have.property('parentRow').eql(2);
             res.body.data.should.have.property('parentColumn').eql(2);
             res.body.data.should.have.property('rowSpan').eql(2);
@@ -344,6 +357,7 @@ describe('Physicals', () => {
       let physical = new Physical({
         virtual: "exampleVirtual",
         creator: "exampleUser",
+        lab: "exampleLab",
         parent: "exampleContainer",
         parentRow: 1,
         parentColumn: 1,

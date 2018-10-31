@@ -15,6 +15,7 @@ module.exports = function(router) {
     let newRecord = new Physical({
       virtual: req.body.virtual,
       creator: res.locals.currentUser || req.body.creator,
+      lab: req.body.lab,
       parent: req.body.parent,
       name: req.body.name,
       description: req.body.description,
@@ -69,6 +70,7 @@ module.exports = function(router) {
           record.virtual = req.body.virtual;
           record.creator = req.body.creator;
           record.name = req.body.name;
+          record.lab = req.body.lab;
           record.parent = req.body.parent;
           record.description = req.body.description;
           record.parentRow = req.body.parentRow;
@@ -99,6 +101,7 @@ module.exports = function(router) {
       Physical.findOne({ _id: req.params.recordId })
         .populate("creator")
         .populate("virtual")
+        .populate("lab")
         .populate("parent")
         .exec((err, record) => {
           record.virtual = req.body.virtual;
@@ -170,10 +173,8 @@ function getAllRecords(req, res, next) {
     Physical.find({}, {}, { sort: { name: 1 } })
     .populate("creator")
     .populate("virtual")
-    .populate({
-      path: 'parent',
-      populate: { path: 'lab' }
-    })
+    .populate("lab")
+    .populate("parent")
     .exec((error, data) => {
       if (error) {
         res.locals.message =
@@ -207,10 +208,8 @@ function getRecordById(req, res, next) {
     .findOne({'_id': req.params.recordId})
     .populate("creator")
     .populate("virtual")
-    .populate({
-      path: 'parent',
-      populate: { path: 'lab' }
-    })
+    .populate("lab")
+    .populate("parent")
     .exec((error, data) => {
       if(error) {
         res.locals.message = "There was a problem with retrieving the record.";
