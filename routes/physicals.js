@@ -170,7 +170,10 @@ function getAllRecords(req, res, next) {
     Physical.find({}, {}, { sort: { name: 1 } })
     .populate("creator")
     .populate("virtual")
-    .populate("parent")
+    .populate({
+      path: 'parent',
+      populate: { path: 'lab' }
+    })
     .exec((error, data) => {
       if (error) {
         res.locals.message =
@@ -204,7 +207,10 @@ function getRecordById(req, res, next) {
     .findOne({'_id': req.params.recordId})
     .populate("creator")
     .populate("virtual")
-    .populate("parent")
+    .populate({
+      path: 'parent',
+      populate: { path: 'lab' }
+    })
     .exec((error, data) => {
       if(error) {
         res.locals.message = "There was a problem with retrieving the record.";
