@@ -119,10 +119,10 @@ module.exports = function(router) {
           Lab.findOne({ _id: req.params.recordId })
           .populate("users")
           .populate("joinRequests")
-          .exec((err, record) => {
+          .exec((err, populatedRecord) => {
             jsonResponse = {
               message: "The updated record was successfully saved.",
-              data: updatedRecord
+              data: populatedRecord
             };
             res.json(jsonResponse);
           });  
