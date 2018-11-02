@@ -114,13 +114,19 @@ module.exports = function(router) {
             message: "There was a problem saving the updated record.",
             data: record
           };
+          res.json(jsonResponse);
         } else {
-          jsonResponse = {
-            message: "The updated record was successfully saved.",
-            data: updatedRecord
-          };
+          Lab.findOne({ _id: req.params.recordId })
+          .populate("users")
+          .populate("joinRequests")
+          .exec((err, record) => {
+            jsonResponse = {
+              message: "The updated record was successfully saved.",
+              data: updatedRecord
+            };
+            res.json(jsonResponse);
+          });  
         }
-        res.json(jsonResponse);
       });
     });     
   });
