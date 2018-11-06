@@ -104,8 +104,8 @@ module.exports = function(router) {
   router.post("/labs/:recordId/membership", userRequired, (req, res) => {
     Lab.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
-      record.users = req.body.lab.users;
-      record.joinRequests = req.body.lab.joinRequests;
+      record.users = req.body.users;
+      record.joinRequests = req.body.joinRequests;
       record.updatedAt = new Date();
       record.save((error, updatedRecord) => {
         let jsonResponse;
