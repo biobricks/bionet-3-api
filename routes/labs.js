@@ -101,7 +101,7 @@ module.exports = function(router) {
   });
 
   // edit record
-  router.post("/labs/:recordId/membership", (req, res) => {
+  router.post("/labs/:recordId/membership", userRequired, (req, res) => {
     Lab.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
       record.users = req.body.lab.users;
