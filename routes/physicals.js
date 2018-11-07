@@ -4,6 +4,7 @@ const Container = require("../models/Container");
 const Physical = require("../models/Physical");
 const jwt = require("jsonwebtoken");
 const adminRequired = require("../modules/apiAccess").adminRequired;
+const userRequired = require("../modules/apiAccess").userRequired;
 
 if (!process.env.JWT_SECRET) {
   require("../config/env.js");
@@ -11,7 +12,7 @@ if (!process.env.JWT_SECRET) {
 
 module.exports = function(router) {
   // create new record
-  router.post("/physicals/new", adminRequired, (req, res) => {
+  router.post("/physicals/new", userRequired, (req, res) => {
     let newRecord = new Physical({
       virtual: req.body.virtual,
       creator: res.locals.currentUser || req.body.creator,
@@ -44,7 +45,7 @@ module.exports = function(router) {
   });
 
   // remove record
-  router.post("/physicals/:recordId/remove", adminRequired, (req, res) => {
+  router.post("/physicals/:recordId/remove", userRequired, (req, res) => {
     Physical.findOneAndDelete(req.params.recordId).exec(error => {
       if (error) {
         jsonResponse = {
@@ -60,7 +61,7 @@ module.exports = function(router) {
   });
 
   // edit record
-  router.post("/physicals/:recordId/edit", adminRequired, (req, res) => {
+  router.post("/physicals/:recordId/edit", userRequired, (req, res) => {
     if (process.env.NODE_ENV === 'test') {
       Physical.findOne({ _id: req.params.recordId })
         .exec((err, record) => {
