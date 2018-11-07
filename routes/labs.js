@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Lab = require("../models/Lab");
 const Container = require("../models/Container");
+const Physical = require("../models/Physical");
 const jwt = require("jsonwebtoken");
 const adminRequired = require("../modules/apiAccess").adminRequired;
 const userRequired = require("../modules/apiAccess").userRequired;
@@ -136,7 +137,8 @@ module.exports = function(router) {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data,
-      children: res.locals.children
+      children: res.locals.children,
+      physicals: res.locals.physicals
     };
     res.json(jsonResponse);
   });
@@ -199,12 +201,29 @@ function getRecordById(req, res, next) {
             res.locals.message = "There was a problem with retrieving the children records.";
             res.locals.data = {};
             res.locals.children = [];
+            return next();
           } else {				
             res.locals.message = "The record was successfully retrieved.";
             res.locals.data = data;
             res.locals.children = children;
+            Physical
+            .find({'parent': req.params.recordId})
+            .exec((error, physicals) => {
+              if(error) {
+                res.locals.message = "There was a problem with retrieving the children records.";
+                res.locals.data = {};
+                res.locals.children = [];
+                res.locals.physicals = [];
+                return next();
+              } else {				
+                res.locals.message = "The record was successfully retrieved.";
+                res.locals.data = data;
+                res.locals.children = children;
+                res.locals.physicals = physicals;
+                return next();
+              }
+            });	
           }
-          return next();
         });		
       }
     });
@@ -233,11 +252,24 @@ function getRecordById(req, res, next) {
             res.locals.data = {};
             res.locals.children = [];
           } else {				
-            res.locals.message = "The record was successfully retrieved.";
-            res.locals.data = data;
-            res.locals.children = children;
+            Physical
+            .find({'parent': req.params.recordId})
+            .exec((error, physicals) => {
+              if(error) {
+                res.locals.message = "There was a problem with retrieving the children records.";
+                res.locals.data = {};
+                res.locals.children = [];
+                res.locals.physicals = [];
+                return next();
+              } else {				
+                res.locals.message = "The record was successfully retrieved.";
+                res.locals.data = data;
+                res.locals.children = children;
+                res.locals.physicals = physicals;
+                return next();
+              }
+            });	
           }
-          return next();
         });		
       }
     });
