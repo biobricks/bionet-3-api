@@ -20,10 +20,7 @@ module.exports = function(router) {
       name: req.body.name,
       description: req.body.description,
       parent: req.body['parent'],
-      parentRow: Number(req.body.parentRow),
-      parentColumn: Number(req.body.parentColumn),
-      rowSpan: Number(req.body.rowSpan),
-      columnSpan: Number(req.body.columnSpan),
+      locations: req.body.locations,
       datName: req.body.datName,
       datHash: req.body.datHash
     });
@@ -73,10 +70,7 @@ module.exports = function(router) {
           record.lab = req.body.lab;
           record.parent = req.body.parent;
           record.description = req.body.description;
-          record.parentRow = req.body.parentRow;
-          record.parentColumn = req.body.parentColumn;
-          record.rowSpan = req.body.rowSpan;
-          record.columnSpan = req.body.columnSpan;
+          record.locations = req.body.locations;
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;
           record.updatedAt = new Date();
@@ -107,12 +101,10 @@ module.exports = function(router) {
           record.virtual = req.body.virtual;
           record.creator = req.body.creator;
           record.name = req.body.name;
+          record.lab = req.body.lab;
           record.parent = req.body.parent;
           record.description = req.body.description;
-          record.parentRow = req.body.parentRow;
-          record.parentColumn = req.body.parentColumn;
-          record.rowSpan = req.body.rowSpan;
-          record.columnSpan = req.body.columnSpan;
+          record.locations = req.body.locations;
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;
           record.updatedAt = new Date();

@@ -9,13 +9,10 @@ const modelSchema = mongoose.Schema({
   createdAt: { type: String, default: new Date() },
   updatedAt: { type: String, default: new Date() },
   lab: { type: String, ref: "Lab", required: true },
-  parent: { type: String, ref: "Container", required: true },
-  parentRow: { type: Number, required: true },
-  parentColumn: { type: Number, required: true },
+  parent: { type: String, ref: "Container" },
+  locations: [],
   name: { type: String, unique: true, required: true },
   description: String,
-  rowSpan: { type: Number, min: 1, max: 200, default: 1 },
-  columnSpan: { type: Number, min: 1, max: 200, default: 1 },
   datName: String,
   datHash: String
 });
