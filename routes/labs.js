@@ -207,7 +207,7 @@ function getRecordById(req, res, next) {
             res.locals.data = data;
             res.locals.children = children;
             Physical
-            .find({'parent': req.params.recordId})
+            .find({'parent': null})
             .exec((error, physicals) => {
               if(error) {
                 res.locals.message = "There was a problem with retrieving the children records.";
@@ -253,7 +253,7 @@ function getRecordById(req, res, next) {
             res.locals.children = [];
           } else {				
             Physical
-            .find({'parent': req.params.recordId})
+            .find({'parent': null})
             .exec((error, physicals) => {
               if(error) {
                 res.locals.message = "There was a problem with retrieving the children records.";
