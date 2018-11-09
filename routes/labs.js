@@ -56,7 +56,7 @@ module.exports = function(router) {
 
   // remove record
   router.post("/labs/:recordId/remove", userRequired, (req, res) => {
-    Lab.findOneAndDelete(req.params.recordId).exec(error => {
+    Lab.findOneAndDelete({_id: req.params.recordId}).exec(error => {
       if (error) {
         jsonResponse = {
           message: "There was a problem removing the record."
