@@ -47,7 +47,7 @@ module.exports = function(router) {
 
   // remove record
   router.post("/containers/:recordId/remove", userRequired, (req, res) => {
-    Container.findOneAndDelete(req.params.recordId).exec(error => {
+    Container.findOneAndDelete({_id: req.params.recordId}).exec(error => {
       if (error) {
         jsonResponse = {
           message: "There was a problem removing the record."
@@ -136,7 +136,8 @@ module.exports = function(router) {
     let jsonResponse = {
       message: res.locals.message,
       data: res.locals.data,
-      containers: res.locals.containers
+      containers: res.locals.containers,
+      physicals: res.locals.physicals
     };
     res.json(jsonResponse);
   });
@@ -222,12 +223,28 @@ function getRecordById(req, res, next) {
             res.locals.message = "There was a problem with retrieving the record.";
             res.locals.data = {};
             res.locals.containers = [];
+            return next();
           } else {
-            res.locals.message = "The record was successfully retrieved.";
-            res.locals.data = container;
-            res.locals.containers = containers;
+            Physical
+            .find({'parent': container._id}, {}, { sort: { name: 1 }})
+            .popuate("creator")
+            .populate("virtual")
+            .populate("lab")
+            .exec((error, physicals) => {
+              if(error) {
+                res.locals.message = "There was a problem with retrieving the record.";
+                res.locals.data = {};
+                res.locals.containers = [];
+                res.locals.physicals = [];
+              } else {
+                res.locals.message = "The record was successfully retrieved.";
+                res.locals.data = container;
+                res.locals.containers = containers;
+                res.locals.physicals = physicals;
+              }
+              return next();
+            });            
           }
-          return next();
         });             
       }
     });
