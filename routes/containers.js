@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Physical = require("../models/Physical");
 const Container = require("../models/Container");
 const jwt = require("jsonwebtoken");
 const adminRequired = require("../modules/apiAccess").adminRequired;
