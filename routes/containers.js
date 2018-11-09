@@ -228,7 +228,7 @@ function getRecordById(req, res, next) {
           } else {
             Physical
             .find({'parent': container._id}, {}, { sort: { name: 1 }})
-            .popuate("creator")
+            .populate("creator")
             .populate("virtual")
             .populate("lab")
             .exec((error, physicals) => {
