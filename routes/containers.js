@@ -14,7 +14,7 @@ module.exports = function(router) {
   router.post("/containers/new", userRequired, (req, res) => {
     let newRecord = new Container({
       creator: req.body.creator,
-      parent: req.body.parent || null,
+      parent: req.body.parent,
       lab: req.body.lab,
       name: req.body.name,
       description: req.body.description,
