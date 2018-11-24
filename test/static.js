@@ -25,4 +25,21 @@ describe("Static", () => {
         });
     });
   });
+
+  describe("/GET /dashboard", () => {
+    it("it should GET the dashboard", done => {
+      chai
+        .request(server)
+        .get("/api/v1/dashboard")
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("object");
+          res.body.should.have.property("message");
+          res.body.message.should.be.a("string").eql("User successfully retrieved from the Database.");
+          res.body.should.have.property("user");
+          res.body.user.should.be.a("object");
+          done();
+        });
+    });
+  });
 });
