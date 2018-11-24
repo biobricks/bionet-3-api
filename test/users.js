@@ -95,6 +95,47 @@ describe('Users', () => {
           done();
         });
     });
+    it('it should not POST a user without password field', (done) => {
+      let user = {
+        username: "123",
+        name: "foo",
+        email: "foo@example.com",
+        imageUrl: "http://example.com/examplepicture"
+      };
+      chai.request(server)
+        .post('/api/v1/users/new')
+        .send(user)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have.property('message').eql('Check the form for errors.');
+          res.body.should.have.property('errors');
+          res.body.errors.should.have.property('password').eql('Password must have at least 8 characters.');
+          done();
+        });
+    });
+    it('it should not POST a user with a password of less than 8 characters', (done) => {
+      let user = {
+        username: "123",
+        password: "1234567",
+        name: "foo",
+        email: "foo@example.com",
+        imageUrl: "http://example.com/examplepicture"
+      };
+      chai.request(server)
+        .post('/api/v1/users/new')
+        .send(user)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have.property('message').eql('Check the form for errors.');
+          res.body.should.have.property('errors');
+          res.body.errors.should.have.property('password').eql('Password must have at least 8 characters.');
+          done();
+        });
+    });
     it('it should successfully POST a user', (done) => {
       let user = {
         username: "123",
