@@ -217,7 +217,7 @@ describe("Auth", () => {
         });
     });
 
-    it('it should not POST a user with invalid credentials', (done) => {
+    it('it should not POST a user with invalid username', (done) => {
       let payload = {
         username: "123",
         password: "foobarbaz"
@@ -232,6 +232,31 @@ describe("Auth", () => {
           res.body.should.have.property('message').eql('Incorrect username or password');
           done();
         });
+    });
+
+    it('it should not POST a user with invalid password', (done) => {
+      let user = new User({
+        username: "123",
+        password: "foobarbaz",
+        name: "foo",
+        email: "foo@example.com"
+      });
+      user.save((error, user) => {
+        let payload = {
+          username: "123",
+          password: "invalid"
+        };
+        chai.request(server)
+          .post('/api/v1/login')
+          .send(payload)
+          .end((err, res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+            res.body.should.have.property('success').eql(false);
+            res.body.should.have.property('message').eql('Incorrect username or password');
+            done();
+          });
+      });
     });
 
     it('it should successfully POST a user', (done) => {
