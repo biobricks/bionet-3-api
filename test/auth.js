@@ -178,4 +178,92 @@ describe("Auth", () => {
         });
     });
   });
+
+  describe("/POST /login", () => {
+    it("it should not POST a user without username field", done => {
+      let payload = {
+        password: "foobarbaz"
+      }
+      chai
+        .request(server)
+        .post("/api/v1/login")
+        .send(payload)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have.property('message').eql('Check the form for errors.');
+          res.body.should.have.property('errors');
+          res.body.errors.should.have.property('username').eql('Please provide your username.');
+          done();
+        });
+    });
+
+    it('it should not POST a user without password field', (done) => {
+      let payload = {
+        username: "123"
+      };
+      chai.request(server)
+        .post('/api/v1/login')
+        .send(payload)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have.property('message').eql('Check the form for errors.');
+          res.body.should.have.property('errors');
+          res.body.errors.should.have.property('password').eql('Please provide your password.');
+          done();
+        });
+    });
+
+    it('it should not POST a user with invalid credentials', (done) => {
+      let payload = {
+        username: "123",
+        password: "foobarbaz"
+      };
+      chai.request(server)
+        .post('/api/v1/login')
+        .send(payload)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have.property('message').eql('Incorrect username or password');
+          done();
+        });
+    });
+
+    it('it should successfully POST a user', (done) => {
+      let user = new User({
+        username: "123",
+        password: "foobarbaz",
+        name: "foo",
+        email: "foo@example.com"
+      });
+      user.save((error, user) => {
+        let payload = {
+          username: "123",
+          password: "foobarbaz"
+        };
+        chai.request(server)
+          .post('/api/v1/login')
+          .send(payload)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('success').eql(true);
+            res.body.should.have.property('message').eql('You have successfully logged in!');
+            res.body.should.have.property('token');
+            res.body.token.should.be.a('string');
+            res.body.should.have.property('user');
+            res.body.user.should.be.a('object');
+            res.body.user.should.have.property('username');
+            res.body.user.username.should.be.a('string').eql('123');
+            res.body.should.not.have.property('errors');
+            done();
+          });
+      });
+    });
+  });
 });
