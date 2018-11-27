@@ -13,4 +13,5 @@ env:
   DB_USERNAME: travis
   DB_PASSWORD: test
   DB_URI: 127.0.0.1/bionet_test
+  DB_TEST_URI: 127.0.0.1/bionet_test
   JWT_SECRET: 'abcdefgklmnopqrstuvwxyz123456789'
