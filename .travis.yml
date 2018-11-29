@@ -1,5 +1,17 @@
 language: node_js
+services:
+  - mongodb
 git:
   depth: false
   submodules: false
-after_success: npm run coverage  
+before_script:
+  - sleep 15
+  - mongo bionet_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+after_success: npm run coverage
+env:
+  NODE_ENV: test
+  DB_USERNAME: travis
+  DB_PASSWORD: test
+  DB_URI: 127.0.0.1/bionet_test
+  DB_TEST_URI: 127.0.0.1/bionet_test
+  JWT_SECRET: 'abcdefgklmnopqrstuvwxyz123456789'
