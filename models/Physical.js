@@ -10,11 +10,15 @@ const modelSchema = mongoose.Schema({
   updatedAt: { type: String, default: new Date() },
   lab: { type: String, ref: "Lab", required: true },
   parent: { type: String, ref: "Container" },
-  locations: [],
   name: { type: String, unique: true, required: true },
   description: String,
   datName: String,
-  datHash: String
+  datHash: String,
+
+  row: {type: Number, default: 1},
+  column: {type: Number, default: 1},
+  rowSpan: {type: Number, default: 1},
+  colSpan: {type: Number, default: 1}
 });
 
 module.exports = mongoose.model("Physical", modelSchema);

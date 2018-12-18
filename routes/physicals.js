@@ -23,7 +23,12 @@ module.exports = function(router) {
       parent: req.body['parent'],
       locations: req.body.locations,
       datName: req.body.datName,
-      datHash: req.body.datHash
+      datHash: req.body.datHash,
+
+      row: req.body.row,
+      column: req.body.column,
+      rowSpan: req.body.rowSpan,
+      colSpan: req.body.colSpan
     });
     newRecord.save((error, data) => {
       let jsonResponse;
@@ -74,6 +79,12 @@ module.exports = function(router) {
           record.locations = req.body.locations;
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;
+
+          record.row = req.body.row;
+          record.column = req.body.column;
+          record.rowSpan = req.body.rowSpan;
+          record.colSpan = req.body.colSpan;
+
           record.updatedAt = new Date();
       
           record.save((error, updatedRecord) => {
@@ -108,6 +119,12 @@ module.exports = function(router) {
           record.locations = req.body.locations;
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;
+
+          record.row = req.body.row;
+          record.column = req.body.column;
+          record.rowSpan = req.body.rowSpan;
+          record.colSpan = req.body.colSpan;
+          
           record.updatedAt = new Date();
       
           record.save((error, updatedRecord) => {
