@@ -20,11 +20,15 @@ module.exports = function(router) {
       description: req.body.description,
       rows: req.body.rows,
       columns: req.body.columns,
-      locations: req.body.locations,
       category: req.body.category,
       datName: req.body.datName,
       datHash: req.body.datHash,
-      bgColor: req.body.bgColor
+      bgColor: req.body.bgColor,
+
+      row: req.body.row,
+      column: req.body.column,
+      rowSpan: req.body.rowSpan,
+      colSpan: req.body.colSpan
     });
     newRecord.save((error, data) => {
       let jsonResponse;
@@ -79,6 +83,12 @@ module.exports = function(router) {
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;
           record.bgColor = req.body.bgColor;
+
+          record.row = req.body.row;
+          record.row = req.body.row;
+          record.row = req.body.row;
+          record.row = req.body.row;
+
           record.updatedAt = new Date();
       
           record.save((error, updatedRecord) => {
@@ -111,6 +121,12 @@ module.exports = function(router) {
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;
           record.bgColor = req.body.bgColor;
+
+          record.row = req.body.row;
+          record.row = req.body.row;
+          record.row = req.body.row;
+          record.row = req.body.row;
+
           record.updatedAt = new Date();
       
           record.save((error, updatedRecord) => {
