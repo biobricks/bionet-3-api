@@ -81,9 +81,9 @@ module.exports = function(router) {
           record.datHash = req.body.datHash;
 
           record.row = req.body.row;
-          record.row = req.body.row;
-          record.row = req.body.row;
-          record.row = req.body.row;
+          record.column = req.body.column;
+          record.rowSpan = req.body.rowSpan;
+          record.colSpan = req.body.colSpan;
 
           record.updatedAt = new Date();
       
@@ -121,9 +121,9 @@ module.exports = function(router) {
           record.datHash = req.body.datHash;
 
           record.row = req.body.row;
-          record.row = req.body.row;
-          record.row = req.body.row;
-          record.row = req.body.row;
+          record.column = req.body.column;
+          record.rowSpan = req.body.rowSpan;
+          record.colSpan = req.body.colSpan;
           
           record.updatedAt = new Date();
       
