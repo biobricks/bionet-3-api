@@ -13,11 +13,15 @@ const modelSchema = mongoose.Schema({
   description: String,
   rows: { type: Number, min: 1, max: 200, required: true },
   columns: { type: Number, min: 1, max: 200, required: true },
-  locations: [],
   category: { type: String, required: true },
   datName: String,
   datHash: String,
-  bgColor: { type: String, default: "#00D1FD" }
+  bgColor: { type: String, default: "#00D1FD" },
+
+  row: Number,
+  column: Number,
+  rowSpan: Number,
+  colSpan: Number
 });
 
 module.exports = mongoose.model("Container", modelSchema);
