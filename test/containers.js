@@ -19,11 +19,15 @@ const exampleContainer = {
   description: "bar baz quay",
   rows: 1,
   columns: 2,
-  locations: [],
   category: "Freezer",
   datName: "fooDat",
   datHash: "fooHash",
-  bgColor: "#cccccc" 
+  bgColor: "#cccccc",
+  
+  row: 1,
+  column: 1,
+  rowSpan: 1,
+  colSpan: 1  
 };
 
 chai.use(chaiHttp);
@@ -64,11 +68,15 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc",
+
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1  
       };
       chai.request(server)
         .post('/api/v1/containers/new')
@@ -91,11 +99,15 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc",
+
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1  
       };
       chai.request(server)
         .post('/api/v1/containers/new')
@@ -118,11 +130,15 @@ describe('Containers', () => {
         name: "foo",
         description: "bar baz quay",
         columns: 2,
-        locations: [],
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc",
+
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1  
       };
       chai.request(server)
         .post('/api/v1/containers/new')
@@ -145,11 +161,15 @@ describe('Containers', () => {
         name: "foo",
         description: "bar baz quay",
         columns: 2,
-        locations: [],
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
-        bgColor: "#cccccc" 
+        bgColor: "#cccccc",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1  
       };
       chai.request(server)
         .post('/api/v1/containers/new')
@@ -172,11 +192,15 @@ describe('Containers', () => {
         name: "foo",
         description: "bar baz quay",
         rows: 1,
-        locations: [],
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
-        bgColor: "#cccccc" 
+        bgColor: "#cccccc",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1  
       };
       chai.request(server)
         .post('/api/v1/containers/new')
@@ -212,11 +236,15 @@ describe('Containers', () => {
           res.body.data.should.have.property('description');
           res.body.data.should.have.property('rows');
           res.body.data.should.have.property('columns');
-          res.body.data.should.have.property('locations');
           res.body.data.should.have.property('category');
           res.body.data.should.have.property('datName');
           res.body.data.should.have.property('datHash'); 
-          res.body.data.should.have.property('bgColor');          
+          res.body.data.should.have.property('bgColor');
+          
+          res.body.data.should.have.property('row');
+          res.body.data.should.have.property('column');
+          res.body.data.should.have.property('rowSpan');
+          res.body.data.should.have.property('colSpan');
           done();
         });
     });    
@@ -232,11 +260,15 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc",
+
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1
       });
       container.save((error, container) => {
         if (error) { 
@@ -263,11 +295,15 @@ describe('Containers', () => {
               res.body.data.should.have.property('description');
               res.body.data.should.have.property('rows');
               res.body.data.should.have.property('columns');
-              res.body.data.should.have.property('locations');
               res.body.data.should.have.property('category');
               res.body.data.should.have.property('datName');
               res.body.data.should.have.property('datHash');
               res.body.data.should.have.property('bgColor');
+
+              res.body.data.should.have.property('row');
+              res.body.data.should.have.property('column');
+              res.body.data.should.have.property('rowSpan');
+              res.body.data.should.have.property('colSpan');
               done();
             });
           }    
@@ -285,11 +321,15 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [[1,2]],
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
-        bgColor: "#dddddd"      
+        bgColor: "#dddddd",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1
       });
       container.save((error, container) => {
         if (error) { console.log(error) }
@@ -304,11 +344,15 @@ describe('Containers', () => {
             description: "bar baz quay foo",
             rows: 5,
             columns: 6,
-            locations: [[3,4]],
             category: "Well",
             datName: "fooDatData",
             datHash: "SADHJKASHDKJASKDKD",
-            bgColor: "#cccccc"   
+            bgColor: "#cccccc",
+            
+            row: 1,
+            column: 1,
+            rowSpan: 1,
+            colSpan: 1
           })
           .end((err, res) => {
             if (err) { console.log(err) }
@@ -326,11 +370,15 @@ describe('Containers', () => {
             res.body.data.should.have.property('description').eql('bar baz quay foo');
             res.body.data.should.have.property('rows').eql(5);
             res.body.data.should.have.property('columns').eql(6);
-            res.body.data.should.have.property('locations').eql([[3,4]]);
             res.body.data.should.have.property('category').eql('Well');
             res.body.data.should.have.property('datName').eql('fooDatData');
             res.body.data.should.have.property('datHash').eql('SADHJKASHDKJASKDKD');
             res.body.data.should.have.property('bgColor').eql('#cccccc');
+
+            res.body.data.should.have.property('row').eql(1);
+            res.body.data.should.have.property('column').eql(1);
+            res.body.data.should.have.property('rowSpan').eql(1);
+            res.body.data.should.have.property('colSpan').eql(1);
             done();
           });
       });
@@ -347,11 +395,15 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
         category: "Freezer",
         datName: "fooDatData",
         datHash: "SADHJKASHDKJASKDKD",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc",
+
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1
       });
       container.save((error, container) => {
         let route = `/api/v1/containers/${container._id}/remove`;

@@ -42,11 +42,15 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1 
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -66,11 +70,15 @@ describe('Physicals', () => {
         virtual: "exampleVirtual",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1  
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -91,10 +99,14 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
         description: "bar baz quay",
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1 
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -117,9 +129,13 @@ describe('Physicals', () => {
         parent: "exampleContainer",
         name: "foo",
         description: "bar baz quay",
-        locations: [[1,1]],
         datName: "fooDat",
-        datHash: "fooHash" 
+        datHash: "fooHash",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1 
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -136,9 +152,13 @@ describe('Physicals', () => {
           res.body.data.should.have.property('description');
           res.body.data.should.have.property('lab');
           res.body.data.should.have.property('parent');
-          res.body.data.should.have.property('locations');
           res.body.data.should.have.property('datName');
           res.body.data.should.have.property('datHash');
+
+          res.body.data.should.have.property('row');
+          res.body.data.should.have.property('column');
+          res.body.data.should.have.property('rowSpan');
+          res.body.data.should.have.property('colSpan');
           done();
         });
     });    
@@ -151,11 +171,15 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
-        datHash: "fooHash"    
+        datHash: "fooHash",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1 
       });
       physical.save((error, physical) => {
         if (error) { 
@@ -178,9 +202,13 @@ describe('Physicals', () => {
               res.body.data.should.have.property('name');
               res.body.data.should.have.property('description');
               res.body.data.should.have.property('parent');
-              res.body.data.should.have.property('locations');
               res.body.data.should.have.property('datName');
               res.body.data.should.have.property('datHash');
+
+              res.body.data.should.have.property('row');
+              res.body.data.should.have.property('column');
+              res.body.data.should.have.property('rowSpan');
+              res.body.data.should.have.property('colSpan');
               done();
             });
           }    
@@ -194,11 +222,15 @@ describe('Physicals', () => {
         virtual: "exampleVirtual",
         creator: "exampleUser",
         lab: "exampleLab",
-        locations: [[1,2]],
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
-        datHash: "fooHash"    
+        datHash: "fooHash",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1
       });
       physical.save((error, physical) => {
         if (error) { console.log(error) }
@@ -210,11 +242,15 @@ describe('Physicals', () => {
             creator: "exampleUser2",
             lab: "exampleLab2",
             parent: "exampleContainer2",
-            locations: [[3,4]],
             name: "foo2",
             description: "bar baz quay2",
             datName: "fooDat2",
-            datHash: "fooHash2"       
+            datHash: "fooHash2",
+            
+            row: 1,
+            column: 1,
+            rowSpan: 1,
+            colSpan: 1
           })
           .end((err, res) => {
             if (err) { console.log(err) }
@@ -229,9 +265,13 @@ describe('Physicals', () => {
             res.body.data.should.have.property('description').eql('bar baz quay2');
             res.body.data.should.have.property('lab').eql('exampleLab2');
             res.body.data.should.have.property('parent').eql('exampleContainer2');
-            res.body.data.should.have.property('locations').eql([[3,4]]);
             res.body.data.should.have.property('datName').eql('fooDat2');
             res.body.data.should.have.property('datHash').eql('fooHash2');
+
+            res.body.data.should.have.property('row').eql(1);
+            res.body.data.should.have.property('column').eql(1);
+            res.body.data.should.have.property('rowSpan').eql(1);
+            res.body.data.should.have.property('colSpan').eql(1);
             done();
           });
       });
@@ -245,11 +285,15 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,2]],
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
-        datHash: "fooHash"    
+        datHash: "fooHash",
+        
+        row: 1,
+        column: 1,
+        rowSpan: 1,
+        colSpan: 1 
       });
       physical.save((error, physical) => {
         let route = `/api/v1/physicals/${physical._id}/remove`;
@@ -265,5 +309,4 @@ describe('Physicals', () => {
       });
     });
   });
-
 });
