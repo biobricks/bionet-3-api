@@ -15,10 +15,10 @@ const modelSchema = mongoose.Schema({
   datName: String,
   datHash: String,
 
-  row: Number,
-  column: Number,
-  rowSpan: Number,
-  colSpan: Number
+  row: {type: Number, default: 1},
+  column: {type: Number, default: 1},
+  rowSpan: {type: Number, default: 1},
+  colSpan: {type: Number, default: 1}
 });
 
 module.exports = mongoose.model("Physical", modelSchema);

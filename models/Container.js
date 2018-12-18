@@ -18,10 +18,10 @@ const modelSchema = mongoose.Schema({
   datHash: String,
   bgColor: { type: String, default: "#00D1FD" },
 
-  row: Number,
-  column: Number,
-  rowSpan: Number,
-  colSpan: Number
+  row: {type: Number, default: 1},
+  column: {type: Number, default: 1},
+  rowSpan: {type: Number, default: 1},
+  colSpan: {type: Number, default: 1}
 });
 
 module.exports = mongoose.model("Container", modelSchema);
