@@ -13,7 +13,6 @@ const modelSchema = mongoose.Schema({
   description: String,
   rows: { type: Number, min: 1, max: 200, required: true },
   columns: { type: Number, min: 1, max: 200, required: true },
-  locations: [],
   row: { type: Number, default: 1 },
   column: { type: Number, default: 1 },
   rowSpan: { type: Number, default: 1 },

@@ -42,7 +42,10 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
+        row: 1,
+        column: 2,
+        rowSpan: 3,
+        columnSpan: 4,
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
@@ -66,7 +69,10 @@ describe('Physicals', () => {
         virtual: "exampleVirtual",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
+        row: 1,
+        column: 2,
+        rowSpan: 3,
+        columnSpan: 4,
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
@@ -91,7 +97,10 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
+        row: 1,
+        column: 2,
+        rowSpan: 3,
+        columnSpan: 4,
         description: "bar baz quay",
         datName: "fooDat",
         datHash: "fooHash" 
@@ -117,7 +126,10 @@ describe('Physicals', () => {
         parent: "exampleContainer",
         name: "foo",
         description: "bar baz quay",
-        locations: [[1,1]],
+        row: 1,
+        column: 2,
+        rowSpan: 3,
+        columnSpan: 4,
         datName: "fooDat",
         datHash: "fooHash" 
       };
@@ -136,7 +148,10 @@ describe('Physicals', () => {
           res.body.data.should.have.property('description');
           res.body.data.should.have.property('lab');
           res.body.data.should.have.property('parent');
-          res.body.data.should.have.property('locations');
+          res.body.data.should.have.property('row');
+          res.body.data.should.have.property('column');
+          res.body.data.should.have.property('rowSpan');
+          res.body.data.should.have.property('columnSpan');
           res.body.data.should.have.property('datName');
           res.body.data.should.have.property('datHash');
           done();
@@ -151,7 +166,10 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,1]],
+        row: 1,
+        column: 2,
+        rowSpan: 3,
+        columnSpan: 4,
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
@@ -178,7 +196,10 @@ describe('Physicals', () => {
               res.body.data.should.have.property('name');
               res.body.data.should.have.property('description');
               res.body.data.should.have.property('parent');
-              res.body.data.should.have.property('locations');
+              res.body.data.should.have.property('row');
+              res.body.data.should.have.property('column');
+              res.body.data.should.have.property('rowSpan');
+              res.body.data.should.have.property('columnSpan');
               res.body.data.should.have.property('datName');
               res.body.data.should.have.property('datHash');
               done();
@@ -194,7 +215,10 @@ describe('Physicals', () => {
         virtual: "exampleVirtual",
         creator: "exampleUser",
         lab: "exampleLab",
-        locations: [[1,2]],
+        row: 1,
+        column: 2,
+        rowSpan: 3,
+        columnSpan: 4,
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
@@ -210,7 +234,10 @@ describe('Physicals', () => {
             creator: "exampleUser2",
             lab: "exampleLab2",
             parent: "exampleContainer2",
-            locations: [[3,4]],
+            row: 2,
+            column: 3,
+            rowSpan: 4,
+            columnSpan: 5,
             name: "foo2",
             description: "bar baz quay2",
             datName: "fooDat2",
@@ -229,7 +256,10 @@ describe('Physicals', () => {
             res.body.data.should.have.property('description').eql('bar baz quay2');
             res.body.data.should.have.property('lab').eql('exampleLab2');
             res.body.data.should.have.property('parent').eql('exampleContainer2');
-            res.body.data.should.have.property('locations').eql([[3,4]]);
+            res.body.data.should.have.property('row').eql(2);
+            res.body.data.should.have.property('column').eql(3);
+            res.body.data.should.have.property('rowSpan').eql(4);
+            res.body.data.should.have.property('columnSpan').eql(5);
             res.body.data.should.have.property('datName').eql('fooDat2');
             res.body.data.should.have.property('datHash').eql('fooHash2');
             done();
@@ -245,7 +275,10 @@ describe('Physicals', () => {
         creator: "exampleUser",
         lab: "exampleLab",
         parent: "exampleContainer",
-        locations: [[1,2]],
+        row: 2,
+        column: 3,
+        rowSpan: 4,
+        columnSpan: 5,
         name: "foo",
         description: "bar baz quay",
         datName: "fooDat",
