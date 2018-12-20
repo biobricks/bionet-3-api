@@ -184,7 +184,10 @@ async function getChildren(record, allContainers, allPhysicals) {
       }
     }
 
-    let result = { containers, physicals };
+    let result = { 
+      'containers': containers, 
+      'physicals': physicals 
+    };
     return result;
   } catch (error) {
     console.log(error);
