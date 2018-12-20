@@ -5,6 +5,7 @@ const Physical = require("../models/Physical");
 const Virtual = require("../models/Virtual");
 
 const mongoFetch = {
+  tree: {},
   fetchAll: async (Model) => { // making a /labs route to test require and use of this function
     let results;
     // each model requires different attribute population
@@ -66,7 +67,10 @@ const mongoFetch = {
               path: 'joinRequests',
               select: '_id username'
             });
-            result['children'] = await fetchAllByParent(id);
+            result['children'] = await getChildren(result);
+            // mongoFetch.tree = result;
+            // await getChildren(result)
+            // result = mongoFetch.tree;
             break;
           case Container:
             result = await Model.findOne({_id: id}).populate({
@@ -79,7 +83,7 @@ const mongoFetch = {
               path: 'lab',
               select: '_id name'
             });
-            result['children'] = await fetchAllByParent(id);
+            result['children'] = await getChildren(id);
             break;  
           case Physical:
             result = await Model.findOne({_id: id}).populate({
@@ -112,27 +116,33 @@ const mongoFetch = {
 
 module.exports = mongoFetch;
 
-async function fetchAllByParent(id) {
+async function getChildren(record) {
+
+  // filter all containers into children of record
   let allContainers = await mongoFetch.fetchAll(Container);
-  let allPhysicals = await mongoFetch.fetchAll(Physical);
   let containers = [];
-  let physicals = [];
   for(let i = 0; i < allContainers.length; i++){
     let container = allContainers[i];
     let containerChildOfLab = container.parent === null;
-    let containerMatchesParent = containerChildOfLab ? String(container.lab._id) === String(id) : String(container.parent._id) === String(id);
+    let containerMatchesParent = containerChildOfLab ? String(container.lab._id) === String(record._id) : String(container.parent._id) === String(record._id);
     if (containerMatchesParent) {
+      container.children = await getChildren(container);
       containers.push(container);
     }
   }
+
+  // filter all physicals into children of record
+  let allPhysicals = await mongoFetch.fetchAll(Physical);
+  let physicals = [];
   for(let i = 0; i < allPhysicals.length; i++){
     let physical = allPhysicals[i];
     if (physical.parent !== null) {
-      if (String(physical.parent._id) === String(id)) {
+      if (String(physical.parent._id) === String(record._id)) {
         physicals.push(physical);
       }
     }
   }
+
   let result = { containers, physicals };
   return result;
 }
