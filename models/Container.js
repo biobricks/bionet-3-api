@@ -17,6 +17,7 @@ const modelSchema = mongoose.Schema({
   column: { type: Number, default: 1 },
   rowSpan: { type: Number, default: 1 },
   columnSpan: { type: Number, default: 1 },
+  children: Array,
   category: { type: String, required: true },
   datName: String,
   datHash: String,

@@ -106,38 +106,6 @@ const mongoFetch = {
         result = await Model.findOne({_id: id});
       }  
       return result;
-  },
-  fetchAllByParent: async (id) => {
-    let allContainers = await this.fetchAll(Container);
-    let allPhysicals = await this.fetchAll(Physical);
-    let containers, physicals = [];
-    for(let i = 0; i < allContainers.length; i++){
-      let container = allContainers[i];
-      if (container.parent && container.parent === id) {
-        containers.push(container);
-      }
-    }
-    for(let i = 0; i < allPhysicals.length; i++){
-      let physical = allPhysicals[i];
-      if (physical.parent && physical.parent === id) {
-        physicals.push(physical);
-      }
-    }
-    let result = { containers, physicals };
-    return result;
-  },
-  fetchOneWithChildren: async (Model, id) => {
-    let record = await this.fetchOne(Model, id);
-    let children = await this.fetchAllByParent(record._id);
-    record['children']['physicals'] = physicals; // using [] instead of . syntax on attribute creation can prevent errors
-    record['children']['containers'] = containers;
-    let result = {
-      record,
-      physicals: children.physicals,
-      containers: children.containers
-    };
-    console.log(result)
-    return result;
   }
 };
 
@@ -145,21 +113,33 @@ module.exports = mongoFetch;
 
 async function fetchAllByParent(id) {
   let allContainers = await mongoFetch.fetchAll(Container);
-  console.log(allContainers);
   let allPhysicals = await mongoFetch.fetchAll(Physical);
-  let containers, physicals = [];
-  // for(let i = 0; i < allContainers.length; i++){
-  //   let container = allContainers[i];
-  //   if (container.parent && container.parent === id) {
-  //     containers.push(container);
-  //   }
-  // }
-  // for(let i = 0; i < allPhysicals.length; i++){
-  //   let physical = allPhysicals[i];
-  //   if (physical.parent && physical.parent === id) {
-  //     physicals.push(physical);
-  //   }
-  // }
+  let containers = [];
+  let physicals = [];
+  for(let i = 0; i < allContainers.length; i++){
+    let container = allContainers[i];
+    if (container.parent !== null) {
+      if (String(container.parent._id) === String(id)) {
+        containers.push(container);
+      }
+    } else {
+      if (id === null) {
+        containers.push(container);
+      }
+    }
+  }
+  for(let i = 0; i < allPhysicals.length; i++){
+    let physical = allPhysicals[i];
+    if (physical.parent !== null) {
+      if (String(physical.parent._id) === String(id)) {
+        physicals.push(physical);
+      }
+    } else {
+      if (id === null) {
+        physicals.push(physical);
+      }
+    }
+  }
   let result = { containers, physicals };
   return result;
 }
