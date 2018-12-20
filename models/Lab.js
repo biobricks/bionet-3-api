@@ -9,6 +9,7 @@ const modelSchema = mongoose.Schema({
   rows         : { type: Number, default: 1, min: 1 },
   columns      : { type: Number, default: 1, min: 1 },
   description  : String,
+  children     : Array,
   users        : [{ type: String, ref: "User"}],
   joinRequests : [{ type: String, ref: "User"}],
   datName      : { type: String, default: "" },

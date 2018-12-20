@@ -66,6 +66,7 @@ const mongoFetch = {
               path: 'joinRequests',
               select: '_id username'
             });
+            result['children'] = await fetchAllByParent(id);
             break;
           case Container:
             result = await Model.findOne({_id: id}).populate({
@@ -118,24 +119,16 @@ async function fetchAllByParent(id) {
   let physicals = [];
   for(let i = 0; i < allContainers.length; i++){
     let container = allContainers[i];
-    if (container.parent !== null) {
-      if (String(container.parent._id) === String(id)) {
-        containers.push(container);
-      }
-    } else {
-      if (id === null) {
-        containers.push(container);
-      }
+    let containerChildOfLab = container.parent === null;
+    let containerMatchesParent = containerChildOfLab ? String(container.lab._id) === String(id) : String(container.parent._id) === String(id);
+    if (containerMatchesParent) {
+      containers.push(container);
     }
   }
   for(let i = 0; i < allPhysicals.length; i++){
     let physical = allPhysicals[i];
     if (physical.parent !== null) {
       if (String(physical.parent._id) === String(id)) {
-        physicals.push(physical);
-      }
-    } else {
-      if (id === null) {
         physicals.push(physical);
       }
     }

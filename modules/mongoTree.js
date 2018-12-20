@@ -26,6 +26,9 @@ module.exports = {
       response.error = error;
       return cb(error, response);
     });
+  },
+  getAllChildren: (record) => {
+
   }
 }
 
@@ -65,4 +68,12 @@ async function populateParentContainers(id) {
   } catch (error) {
     return null;
   }  
+}
+
+async function getChildren(id) {
+  try {
+    // get record by model function // lets make it and use it // ./fetch.js
+  } catch (error) {
+
+  }
 }
