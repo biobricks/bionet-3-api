@@ -147,6 +147,7 @@ module.exports = function(router) {
       res.json(jsonResponse);
     })
     .catch((error) => {
+      console.log(error);
       let message;
       if (error.name === 'CastError'){
         message = `Record with _id ${error.value} not found`;

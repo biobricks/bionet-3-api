@@ -4,7 +4,7 @@ const Container = require("../models/Container");
 const Physical = require("../models/Physical");
 const Virtual = require("../models/Virtual");
 
-module.exports = {
+const mongoFetch = {
   fetchAll: async (Model) => { // making a /labs route to test require and use of this function
     let results;
     // each model requires different attribute population
@@ -29,6 +29,17 @@ module.exports = {
           path: 'lab',
           select: '_id name'
         });
+      case Physical:
+        results = await Model.find().populate({
+          path: 'parent',
+          select: '_id name'
+        }).populate({
+          path: 'creator',
+          select: '_id username'
+        }).populate({
+          path: 'lab',
+          select: '_id name'
+        }).populate('virtual');  
         break;  
       default:
         results = null;
@@ -61,7 +72,20 @@ module.exports = {
               path: 'lab',
               select: '_id name'
             });
+            result['children'] = await fetchAllByParent(id);
             break;  
+          case Physical:
+            result = await Model.findOne({_id: id}).populate({
+              path: 'parent',
+              select: '_id name'
+            }).populate({
+              path: 'creator',
+              select: '_id username'
+            }).populate({
+              path: 'lab',
+              select: '_id name'
+            }).populate('virtual');  
+            break;    
           default:
             result = null;
         }
@@ -105,15 +129,38 @@ module.exports = {
   }
 };
 
-let tree = [];
-async function getChildren(id) {
-  try {
-    let record;
-  } catch (error) {
-    console.log('getChildren error', error);
-    return;
-  }
+module.exports = mongoFetch;
+
+async function fetchAllByParent(id) {
+  let allContainers = await mongoFetch.fetchAll(Container);
+  console.log(allContainers);
+  let allPhysicals = await mongoFetch.fetchAll(Physical);
+  let containers, physicals = [];
+  // for(let i = 0; i < allContainers.length; i++){
+  //   let container = allContainers[i];
+  //   if (container.parent && container.parent === id) {
+  //     containers.push(container);
+  //   }
+  // }
+  // for(let i = 0; i < allPhysicals.length; i++){
+  //   let physical = allPhysicals[i];
+  //   if (physical.parent && physical.parent === id) {
+  //     physicals.push(physical);
+  //   }
+  // }
+  let result = { containers, physicals };
+  return result;
 }
+
+// let tree = [];
+// async function getChildren(id) {
+//   try {
+//     let record;
+//   } catch (error) {
+//     console.log('getChildren error', error);
+//     return;
+//   }
+// }
 
 // example from other file
 // provides the structure, need to move it to this context

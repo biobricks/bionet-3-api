@@ -132,21 +132,52 @@ module.exports = function(router) {
   });
 
   // show one record
-  router.get("/physicals/:recordId", getRecordById, (req, res) => {
-    let jsonResponse = {
-      message: res.locals.message,
-      data: res.locals.data
-    };
-    res.json(jsonResponse);
+  router.get("/physicals/:recordId", (req, res) => {
+    fetchOne(Physical, req.params.recordId)
+    .then((result) => {
+      let jsonResponse = {
+        message: "Success",
+        error: {},
+        data: result
+      };
+      res.json(jsonResponse);
+    })
+    .catch((error) => {
+      console.log(error);
+      let message;
+      if (error.name === 'CastError'){
+        message = `Record with _id ${error.value} not found`;
+      } else {
+        message = "An error occurred."
+      }
+      let jsonResponse = {
+        message,
+        error,
+        data: {}
+      };
+      res.json(jsonResponse);
+    });
   });
 
   // list all records
-  router.get("/physicals", getAllRecords, (req, res) => {
-    let jsonResponse = {
-      message: res.locals.message,
-      data: res.locals.data
-    };
-    res.json(jsonResponse);
+  router.get("/physicals", (req, res) => {
+    fetchAll(Physical)
+    .then((result) => {
+      let jsonResponse = {
+        message: "Success",
+        error: {},
+        data: result
+      };
+      res.json(jsonResponse);
+    })
+    .catch((error) => {
+      let jsonResponse = {
+        message: "There was an error",
+        error,
+        data: []
+      };
+      res.json(jsonResponse);      
+    });
   });
 };
 
