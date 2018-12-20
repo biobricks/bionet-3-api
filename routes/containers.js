@@ -4,6 +4,8 @@ const Container = require("../models/Container");
 const jwt = require("jsonwebtoken");
 const adminRequired = require("../modules/apiAccess").adminRequired;
 const userRequired = require("../modules/apiAccess").userRequired;
+const fetchAll = require("../modules/fetch").fetchAll;
+const fetchOne = require("../modules/fetch").fetchOne;
 
 if (!process.env.JWT_SECRET) {
   require("../config/env.js");
@@ -133,121 +135,151 @@ module.exports = function(router) {
   });
 
   // show one record
-  router.get("/containers/:recordId", getRecordById, (req, res) => {
-    let jsonResponse = {
-      message: res.locals.message,
-      data: res.locals.data,
-      containers: res.locals.containers,
-      physicals: res.locals.physicals
-    };
-    res.json(jsonResponse);
+  // ex. http://localhost:3001/api/v1/containers/5bea189dbaed03330b2c2145
+  router.get("/containers/:recordId", (req, res) => {
+    fetchOne(Container, req.params.recordId)
+    .then((result) => {
+      let jsonResponse = {
+        message: "Success",
+        error: {},
+        data: result
+      };
+      res.json(jsonResponse);
+    })
+    .catch((error) => {
+      let message;
+      if (error.name === 'CastError'){
+        message = `Record with _id ${error.value} not found`;
+      } else {
+        message = "An error occurred."
+      }
+      let jsonResponse = {
+        message,
+        error,
+        data: {}
+      };
+      res.json(jsonResponse);
+    });
   });
 
-  // list all records
-  router.get("/containers", getAllRecords, (req, res) => {
-    let jsonResponse = {
-      message: res.locals.message,
-      data: res.locals.data
-    };
-    res.json(jsonResponse);
+  // list all containers
+  // ex. http://localhost:3001/api/v1/containers
+  router.get("/containers", (req, res) => {
+    fetchAll(Container)
+    .then((result) => {
+      let jsonResponse = {
+        message: "Success",
+        error: {},
+        data: result
+      };
+      res.json(jsonResponse);
+    })
+    .catch((error) => {
+      let jsonResponse = {
+        message: "There was an error",
+        error,
+        data: []
+      };
+      res.json(jsonResponse);      
+    });
   });
 };
 
-function getAllRecords(req, res, next) {
-  if (process.env.NODE_ENV === 'test') {
-    Container.find({}, {}, { sort: { name: 1 } })
-    .exec((error, data) => {
-      if (error) {
-        res.locals.message =
-          "There was a problem with retrieving the records.";
-      } else {
-        res.locals.message =
-          "The records were successfully retrieved.";
-      }
-      res.locals.data = data;
-      return next();
-    });
-  } else {
-    Container.find({}, {}, { sort: { name: 1 } })
-    .populate("creator")
-    .populate("lab")
-    .populate("parent")
-    .exec((error, data) => {
-      if (error) {
-        res.locals.message =
-          "There was a problem with retrieving the records.";
-      } else {
-        res.locals.message =
-          "The records were successfully retrieved.";
-      }
-      res.locals.data = data;
-      return next();
-    });    
-  }  
-}
+// function getAllRecords(req, res, next) {
+//   if (process.env.NODE_ENV === 'test') {
+//     Container.find({}, {}, { sort: { name: 1 } })
+//     .exec((error, data) => {
+//       if (error) {
+//         res.locals.message =
+//           "There was a problem with retrieving the records.";
+//       } else {
+//         res.locals.message =
+//           "The records were successfully retrieved.";
+//       }
+//       res.locals.data = data;
+//       return next();
+//     });
+//   } else {
+//     Container.find({}, {}, { sort: { name: 1 } })
+//     .populate("creator")
+//     .populate("lab")
+//     .populate("parent")
+//     .exec((error, data) => {
+//       if (error) {
+//         res.locals.message =
+//           "There was a problem with retrieving the records.";
+//       } else {
+//         res.locals.message =
+//           "The records were successfully retrieved.";
+//       }
+//       res.locals.data = data;
+//       return next();
+//     });    
+//   }  
+// }
 
-function getRecordById(req, res, next) {
-  if (process.env.NODE_ENV === 'test') {
-    Container
-    .findOne({'_id': req.params.recordId})
-    .exec((error, data) => {
-      if(error) {
-        res.locals.message = "There was a problem with retrieving the record.";
-        res.locals.data = {};
-        res.locals.containers = [];
-      } else {
-        res.locals.message = "The record was successfully retrieved.";
-        res.locals.data = data; 
-        res.locals.containers = [];              
-      }
-      return next();
-    });
-  } else {
-    Container
-    .findOne({'_id': req.params.recordId})
-    .populate("creator")
-    .populate("lab")
-    .populate("parent")
-    .exec((error, container) => {
-      if(error) {
-        res.locals.message = "There was a problem with retrieving the record.";
-        res.locals.data = {};
-        res.locals.containers = [];
-        return next();
-      } else {
-        Container
-        .find({'parent': container._id}, {}, { sort: { name: 1 }})
-        .populate("creator")
-        .populate("lab")
-        .exec((error, containers) => {
-          if(error) {
-            res.locals.message = "There was a problem with retrieving the record.";
-            res.locals.data = {};
-            res.locals.containers = [];
-            return next();
-          } else {
-            Physical
-            .find({'parent': container._id}, {}, { sort: { name: 1 }})
-            .populate("creator")
-            .populate("virtual")
-            .populate("lab")
-            .exec((error, physicals) => {
-              if(error) {
-                res.locals.message = "There was a problem with retrieving the record.";
-                res.locals.data = {};
-                res.locals.containers = [];
-                res.locals.physicals = [];
-              } else {
-                res.locals.message = "The record was successfully retrieved.";
-                res.locals.data = container;
-                res.locals.containers = containers;
-                res.locals.physicals = physicals;
-              }
-              return next();
-            });            
-          }
-        });             
-      }
-    });
-  }
-}   
+// function getRecordById(req, res, next) {
+//   if (process.env.NODE_ENV === 'test') {
+//     Container
+//     .findOne({'_id': req.params.recordId})
+//     .exec((error, data) => {
+//       if(error) {
+//         res.locals.message = "There was a problem with retrieving the record.";
+//         res.locals.data = {};
+//         res.locals.containers = [];
+//       } else {
+//         res.locals.message = "The record was successfully retrieved.";
+//         res.locals.data = data; 
+//         res.locals.containers = [];              
+//       }
+//       return next();
+//     });
+//   } else {
+//     Container
+//     .findOne({'_id': req.params.recordId})
+//     .populate("creator")
+//     .populate("lab")
+//     .populate("parent")
+//     .exec((error, container) => {
+//       if(error) {
+//         res.locals.message = "There was a problem with retrieving the record.";
+//         res.locals.data = {};
+//         res.locals.containers = [];
+//         return next();
+//       } else {
+//         Container
+//         .find({'parent': container._id}, {}, { sort: { name: 1 }})
+//         .populate("creator")
+//         .populate("lab")
+//         .exec((error, containers) => {
+//           if(error) {
+//             res.locals.message = "There was a problem with retrieving the record.";
+//             res.locals.data = {};
+//             res.locals.containers = [];
+//             return next();
+//           } else {
+//             Physical
+//             .find({'parent': container._id}, {}, { sort: { name: 1 }})
+//             .populate("creator")
+//             .populate("virtual")
+//             .populate("lab")
+//             .exec((error, physicals) => {
+//               if(error) {
+//                 res.locals.message = "There was a problem with retrieving the record.";
+//                 res.locals.data = {};
+//                 res.locals.containers = [];
+//                 res.locals.physicals = [];
+//               } else {
+//                 res.locals.message = "The record was successfully retrieved.";
+//                 res.locals.data = container;
+//                 res.locals.containers = containers;
+//                 res.locals.physicals = physicals;
+//               }
+//               return next();
+//             });            
+//           }
+//         });             
+//       }
+//     });
+//   }
+// }   

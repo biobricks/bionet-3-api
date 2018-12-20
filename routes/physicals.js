@@ -5,6 +5,8 @@ const Physical = require("../models/Physical");
 const jwt = require("jsonwebtoken");
 const adminRequired = require("../modules/apiAccess").adminRequired;
 const userRequired = require("../modules/apiAccess").userRequired;
+const fetchAll = require("../modules/fetch").fetchAll;
+const fetchOne = require("../modules/fetch").fetchOne;
 
 if (!process.env.JWT_SECRET) {
   require("../config/env.js");

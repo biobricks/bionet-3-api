@@ -6,6 +6,10 @@ const jwt = require("jsonwebtoken");
 const adminRequired = require("../modules/apiAccess").adminRequired;
 const userRequired = require("../modules/apiAccess").userRequired;
 const getPathToLab = require("../modules/mongoTree").getPathToLab;
+const fetchAll = require("../modules/fetch").fetchAll;
+const fetchOne = require("../modules/fetch").fetchOne;
+const checkForDat = require("../modules/dat").checkForDat;
+
 if (!process.env.JWT_SECRET) {
   require("../config/env.js");
 }
@@ -133,145 +137,66 @@ module.exports = function(router) {
   });
 
   // show one record
-  router.get("/labs/:recordId", getRecordById, (req, res) => {
-    let jsonResponse = {
-      message: res.locals.message,
-      data: res.locals.data,
-      children: res.locals.children,
-      physicals: res.locals.physicals
-    };
-    res.json(jsonResponse);
+  // ex. http://localhost:3001/api/v1/labs/5be539538a1ad7177722787f
+  router.get("/labs/:recordId", checkForDat, (req, res) => {
+    // if no dat found with key of :recordId
+    if (!res.locals.datFound) {
+      fetchOne(Lab, req.params.recordId)
+      .then((result) => {
+        let jsonResponse = {
+          message: "Success - data retrieved from Bionet Centralized Database",
+          error: {},
+          data: result
+        };
+        res.json(jsonResponse);
+      })
+      .catch((error) => {
+        let message;
+        if (error.name === 'CastError'){
+          message = `Record with _id ${error.value} not found`;
+        } else {
+          message = "An error occurred."
+        }
+        let jsonResponse = {
+          message,
+          error,
+          data: {}
+        };
+        res.json(jsonResponse);
+      });
+    // if dat was found with key of :recordId  
+    } else {
+      let message = "Success - data retrieved from Dat Peer To Peer Network";
+      let jsonResponse = {
+        message,
+        error,
+        data: res.locals.dat
+      };
+      res.json(jsonResponse);      
+    }  
   });
 
   // list all records
-  router.get("/labs", getAllRecords, (req, res) => {
-    let jsonResponse = {
-      message: res.locals.message,
-      data: res.locals.data
-    };
-    res.json(jsonResponse);
+  // ex. http://localhost:3001/api/v1/labs/
+  router.get("/labs", (req, res) => {
+    fetchAll(Lab)
+    .then((result) => {
+      let jsonResponse = {
+        message: "Success",
+        error: {},
+        data: result
+      };
+      res.json(jsonResponse);
+    })
+    .catch((error) => {
+      let jsonResponse = {
+        message: "There was an error",
+        error,
+        data: []
+      };
+      res.json(jsonResponse);      
+    });
   });
+
+
 };
-
-function getAllRecords(req, res, next) {
-  if (process.env.NODE_ENV === 'test') {
-    Lab.find({}, {}, { sort: { name: 1 } })
-    .exec((error, data) => {
-      if (error) {
-        res.locals.message = "There was a problem with retrieving the records.";
-        res.locals.data = [];
-      } else {
-        res.locals.message = "The records were successfully retrieved.";
-        res.locals.data = data;
-      }
-      return next();
-    });
-  } else {
-    Lab.find({}, {}, { sort: { name: 1 } })
-    .populate("users")
-    .populate("joinRequests")
-    .exec((error, data) => {
-      if (error) {
-        res.locals.message = "There was a problem with retrieving the records.";
-        res.locals.data = [];
-      } else {
-        res.locals.message = "The records were successfully retrieved.";
-        res.locals.data = data;
-      }
-      return next();
-    });    
-  }  
-}
-
-function getRecordById(req, res, next) {
-  if (process.env.NODE_ENV === 'test') {
-    Lab
-    .findOne({'_id': req.params.recordId})
-    .exec((error, data) => {
-      if(error) {
-        res.locals.message = "There was a problem with retrieving the record foo.";
-        res.locals.error = error;
-        res.locals.data = {};
-        return next();
-      } else {
-        Container
-        .find({'lab': req.params.recordId})
-        .exec((error, children) => {
-          if(error) {
-            res.locals.message = "There was a problem with retrieving the children records.";
-            res.locals.data = {};
-            res.locals.children = [];
-            return next();
-          } else {				
-            res.locals.message = "The record was successfully retrieved.";
-            res.locals.data = data;
-            res.locals.children = children;
-            Physical
-            .find({'parent': null})
-            .exec((error, physicals) => {
-              if(error) {
-                res.locals.message = "There was a problem with retrieving the children records.";
-                res.locals.data = {};
-                res.locals.children = [];
-                res.locals.physicals = [];
-                return next();
-              } else {				
-                res.locals.message = "The record was successfully retrieved.";
-                res.locals.data = data;
-                res.locals.children = children;
-                res.locals.physicals = physicals;
-                return next();
-              }
-            });	
-          }
-        });		
-      }
-    });
-  } else {
-    Lab
-    .findOne({'_id': req.params.recordId})
-    .populate("users")
-    .populate("joinRequests")
-    .exec((error, data) => {
-      if(error) {
-        res.locals.message = "There was a problem with retrieving the record foo.";
-        res.locals.error = error;
-        res.locals.data = {};
-        return next();
-      } else {
-        Container
-        .find({
-          'lab': req.params.recordId
-        })
-        .populate('creator')
-        .populate('lab')
-        .populate('parent')
-        .exec((error, children) => {
-          if(error) {
-            res.locals.message = "There was a problem with retrieving the children records.";
-            res.locals.data = {};
-            res.locals.children = [];
-          } else {				
-            Physical
-            .find({'parent': null})
-            .exec((error, physicals) => {
-              if(error) {
-                res.locals.message = "There was a problem with retrieving the children records.";
-                res.locals.data = {};
-                res.locals.children = [];
-                res.locals.physicals = [];
-                return next();
-              } else {				
-                res.locals.message = "The record was successfully retrieved.";
-                res.locals.data = data;
-                res.locals.children = children;
-                res.locals.physicals = physicals;
-                return next();
-              }
-            });	
-          }
-        });		
-      }
-    });
-  }
-}
