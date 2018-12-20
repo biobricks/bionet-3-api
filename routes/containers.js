@@ -22,7 +22,10 @@ module.exports = function(router) {
       description: req.body.description,
       rows: req.body.rows,
       columns: req.body.columns,
-      locations: req.body.locations,
+      row: req.body.row,
+      column: req.body.column,
+      rowSpan: req.body.rowSpan,
+      columnSpan: req.body.columnSpan,
       category: req.body.category,
       datName: req.body.datName,
       datHash: req.body.datHash,
@@ -76,7 +79,10 @@ module.exports = function(router) {
           record.description = req.body.description;
           record.rows = req.body.rows;
           record.columns  = req.body.columns;
-          record.locations = req.body.locations;
+          record.row = req.body.row;
+          record.column = req.body.column;
+          record.rowSpan = req.body.rowSpan;
+          record.columnSpan = req.body.columnSpan;
           record.category = req.body.category;
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;
@@ -108,7 +114,10 @@ module.exports = function(router) {
           record.description = req.body.description;
           record.rows = req.body.rows;
           record.columns = req.body.columns;
-          record.locations = req.body.locations;
+          record.row = req.body.row;
+          record.column = req.body.column;
+          record.rowSpan = req.body.rowSpan;
+          record.columnSpan = req.body.columnSpan;
           record.category = req.body.category;
           record.datName = req.body.datName;
           record.datHash = req.body.datHash;

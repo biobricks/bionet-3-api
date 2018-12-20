@@ -19,7 +19,10 @@ const exampleContainer = {
   description: "bar baz quay",
   rows: 1,
   columns: 2,
-  locations: [],
+  row: 3,
+  column: 4,
+  rowSpan: 5,
+  columnSpan: 6,
   category: "Freezer",
   datName: "fooDat",
   datHash: "fooHash",
@@ -64,7 +67,10 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
@@ -91,7 +97,10 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
@@ -118,7 +127,10 @@ describe('Containers', () => {
         name: "foo",
         description: "bar baz quay",
         columns: 2,
-        locations: [],
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
@@ -145,7 +157,10 @@ describe('Containers', () => {
         name: "foo",
         description: "bar baz quay",
         columns: 2,
-        locations: [],
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
@@ -172,7 +187,10 @@ describe('Containers', () => {
         name: "foo",
         description: "bar baz quay",
         rows: 1,
-        locations: [],
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
@@ -212,7 +230,10 @@ describe('Containers', () => {
           res.body.data.should.have.property('description');
           res.body.data.should.have.property('rows');
           res.body.data.should.have.property('columns');
-          res.body.data.should.have.property('locations');
+          res.body.data.should.have.property('row');
+          res.body.data.should.have.property('column');
+          res.body.data.should.have.property('rowSpan');
+          res.body.data.should.have.property('columnSpan');
           res.body.data.should.have.property('category');
           res.body.data.should.have.property('datName');
           res.body.data.should.have.property('datHash'); 
@@ -232,7 +253,11 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
+        rows: 1,
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
@@ -263,7 +288,10 @@ describe('Containers', () => {
               res.body.data.should.have.property('description');
               res.body.data.should.have.property('rows');
               res.body.data.should.have.property('columns');
-              res.body.data.should.have.property('locations');
+              res.body.data.should.have.property('row');
+              res.body.data.should.have.property('column');
+              res.body.data.should.have.property('rowSpan');
+              res.body.data.should.have.property('columnSpan');
               res.body.data.should.have.property('category');
               res.body.data.should.have.property('datName');
               res.body.data.should.have.property('datHash');
@@ -285,7 +313,10 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [[1,2]],
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
         datName: "fooDat",
         datHash: "fooHash",
@@ -304,7 +335,10 @@ describe('Containers', () => {
             description: "bar baz quay foo",
             rows: 5,
             columns: 6,
-            locations: [[3,4]],
+            row: 4,
+            column: 5,
+            rowSpan: 6,
+            columnSpan: 7,
             category: "Well",
             datName: "fooDatData",
             datHash: "SADHJKASHDKJASKDKD",
@@ -326,7 +360,13 @@ describe('Containers', () => {
             res.body.data.should.have.property('description').eql('bar baz quay foo');
             res.body.data.should.have.property('rows').eql(5);
             res.body.data.should.have.property('columns').eql(6);
-            res.body.data.should.have.property('locations').eql([[3,4]]);
+            res.body.data.should.have.property('row').eql(4);
+            res.body.data.should.have.property('column').eql(5);
+            res.body.data.should.have.property('rowSpan').eql(6);
+            res.body.data.should.have.property('columnSpan').eql(7);
+            res.body.data.should.have.property('column');
+            res.body.data.should.have.property('rowSpan');
+            res.body.data.should.have.property('columnSpan');
             res.body.data.should.have.property('category').eql('Well');
             res.body.data.should.have.property('datName').eql('fooDatData');
             res.body.data.should.have.property('datHash').eql('SADHJKASHDKJASKDKD');
@@ -347,7 +387,10 @@ describe('Containers', () => {
         description: "bar baz quay",
         rows: 1,
         columns: 2,
-        locations: [],
+        row: 4,
+        column: 5,
+        rowSpan: 6,
+        columnSpan: 7,
         category: "Freezer",
         datName: "fooDatData",
         datHash: "SADHJKASHDKJASKDKD",

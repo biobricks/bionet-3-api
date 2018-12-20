@@ -40,7 +40,13 @@ const mongoFetch = {
           path: 'lab',
           select: '_id name'
         }).populate('virtual');  
-        break;  
+        break; 
+      case Virtual:
+        results = await Model.find().populate({
+          path: 'creator',
+          select: '_id username'
+        });  
+        break;    
       default:
         results = null;
     }
@@ -85,7 +91,13 @@ const mongoFetch = {
               path: 'lab',
               select: '_id name'
             }).populate('virtual');  
-            break;    
+            break;  
+          case Virtual:
+            result = await Model.findOne({_id: id}).populate({
+              path: 'creator',
+              select: '_id username'
+            });  
+            break;      
           default:
             result = null;
         }
