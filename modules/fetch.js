@@ -83,7 +83,7 @@ const mongoFetch = {
               path: 'lab',
               select: '_id name'
             });
-            result['children'] = await getChildren(id);
+            result['children'] = await getChildren(result);
             break;  
           case Physical:
             result = await Model.findOne({_id: id}).populate({
