@@ -36,34 +36,40 @@ module.exports = {
     return results;
   },
   fetchOne: async (Model, id) => {
+    let isTestMode = process.env.NODE_ENV === 'test';
     let result;
-    // each model requires different attribute population
-    switch (Model) {
-      case Lab:
-        result = await Model.findOne({_id: id}).populate({
-          path: 'users',
-          select: '_id username'
-        }).populate({
-          path: 'joinRequests',
-          select: '_id username'
-        });
-        break;
-      case Container:
-        result = await Model.findOne({_id: id}).populate({
-          path: 'parent',
-          select: '_id name'
-        }).populate({
-          path: 'creator',
-          select: '_id username'
-        }).populate({
-          path: 'lab',
-          select: '_id name'
-        });
-        break;  
-      default:
-        result = null;
-    }
-    return result;
+      // each model requires different attribute population
+      if (!isTestMode) {
+        switch (Model) {
+          case Lab:
+            result = await Model.findOne({_id: id}).populate({
+              path: 'users',
+              select: '_id username'
+            }).populate({
+              path: 'joinRequests',
+              select: '_id username'
+            });
+            break;
+          case Container:
+            result = await Model.findOne({_id: id}).populate({
+              path: 'parent',
+              select: '_id name'
+            }).populate({
+              path: 'creator',
+              select: '_id username'
+            }).populate({
+              path: 'lab',
+              select: '_id name'
+            });
+            break;  
+          default:
+            result = null;
+        }
+      } else {
+        // test mode without populate
+        result = await Model.findOne({_id: id});
+      }  
+      return result;
   },
   fetchAllByParent: async (id) => {
     let allContainers = await this.fetchAll(Container);
@@ -102,7 +108,7 @@ module.exports = {
 let tree = [];
 async function getChildren(id) {
   try {
-
+    let record;
   } catch (error) {
     console.log('getChildren error', error);
     return;

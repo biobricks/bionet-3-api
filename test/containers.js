@@ -251,7 +251,7 @@ describe('Containers', () => {
               if (err) { console.log(err) }
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('message').eql('The record was successfully retrieved.');
+              res.body.should.have.property('message').eql('Success');
               res.body.should.have.property('data');
               res.body.data.should.be.a('object');
               res.body.data.should.have.property('creator');
