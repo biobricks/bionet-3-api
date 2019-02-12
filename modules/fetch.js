@@ -165,7 +165,7 @@ async function getChildren(record, allContainers, allPhysicals) {
     let containers = [];
     for(let i = 0; i < allContainers.length; i++){
       let container = allContainers[i];
-      let containerChildOfLab = container.parent === null;
+      let containerChildOfLab = container.parent === undefined || container.parent === null;
       let containerMatchesParent = containerChildOfLab ? String(container.lab._id) === String(record._id) : String(container.parent._id) === String(record._id);
       if (containerMatchesParent) {
         container.children = await getChildren(container, allContainers, allPhysicals);

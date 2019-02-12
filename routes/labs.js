@@ -200,3 +200,12 @@ module.exports = function(router) {
 
 
 };
+
+
+async function getLabData(labId) {
+  try {
+
+  } catch (error) {
+
+  }
+}
