@@ -166,7 +166,14 @@ async function getChildren(record, allContainers, allPhysicals) {
     for(let i = 0; i < allContainers.length; i++){
       let container = allContainers[i];
       let containerChildOfLab = container.parent === undefined || container.parent === null;
-      let containerMatchesParent = containerChildOfLab ? String(container.lab._id) === String(record._id) : String(container.parent._id) === String(record._id);
+      let containerMatchesParent = false;
+      if (containerChildOfLab && String(container.lab._id) === String(record._id)) {
+        containerMatchesParent = true;
+      } else if (!containerChildOfLab && String(container.parent._id) === String(record._id)) {
+        containerMatchesParent = true;
+      }
+      //let containerMatchesParent = containerChildOfLab ? String(container.lab._id) === String(record._id) : String(container.parent._id) === String(record._id);
+      
       if (containerMatchesParent) {
         container.children = await getChildren(container, allContainers, allPhysicals);
         containers.push(container);
@@ -177,10 +184,15 @@ async function getChildren(record, allContainers, allPhysicals) {
     let physicals = [];
     for(let i = 0; i < allPhysicals.length; i++){
       let physical = allPhysicals[i];
-      if (physical.parent !== null) {
-        if (String(physical.parent._id) === String(record._id)) {
+      let physicalChildOfLab = physical.parent === undefined || physical.parent === null;
+      if (physicalChildOfLab) {
+        if (String(physical.lab._id) === String(record._id)) {
           physicals.push(physical);
         }
+      } else {
+        if (String(physical.parent._id) === String(record._id)) {
+          physicals.push(physical);
+        }        
       }
     }
 
