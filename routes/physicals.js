@@ -23,9 +23,8 @@ module.exports = function(router) {
       name: req.body.name,
       description: req.body.description,
       parent: req.body['parent'],
-      locations: req.body.locations,
-      datName: req.body.datName,
-      datHash: req.body.datHash
+      row: req.body.row,
+      column: req.body.column
     });
     newRecord.save((error, data) => {
       let jsonResponse;

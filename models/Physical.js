@@ -15,9 +15,7 @@ const modelSchema = mongoose.Schema({
   rowSpan: { type: Number, default: 1 },
   columnSpan: { type: Number, default: 1 },
   name: { type: String, unique: true, required: true },
-  description: String,
-  datName: String,
-  datHash: String
+  description: String
 });
 
 module.exports = mongoose.model("Physical", modelSchema);
