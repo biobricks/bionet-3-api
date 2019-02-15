@@ -18,8 +18,8 @@ module.exports = function(router) {
   router.post("/labs/new", userRequired, (req, res) => {
     let users = res.locals.currentUser ? [`${res.locals.currentUser._id}`] : [`${req.body.createdBy}`];
     let newRecord = new Lab({
-      createdBy: res.locals.currentUser._id,
-      updatedBy: res.locals.currentUser._id,
+      createdBy: res.locals.currentUser._id || req.body.createdBy,
+      updatedBy: res.locals.currentUser._id || req.body.createdBy,
       name: req.body.name,
       description: req.body.description,
       columns: req.body.columns,
