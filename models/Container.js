@@ -2,11 +2,11 @@
 
 const mongoose = require("mongoose");
 
-// Arbitrary container (rack, shelf, etc)
 const modelSchema = mongoose.Schema({
-  creator: { type: String, ref: "User", required: true },
-  createdAt: { type: String, default: new Date() },
-  updatedAt: { type: String, default: new Date() },
+  createdAt    : { type: String, default: new Date() },
+  createdBy    : { type: String, ref: "User", required: true },
+  updatedAt    : { type: String, default: new Date() },
+  updatedBy    : { type: String, ref: "User" },
   lab: { type: String, ref: "Lab", required: true },
   parent: { type: String, ref: "Container" },
   name: { type: String, unique: true, required: true },
@@ -18,9 +18,7 @@ const modelSchema = mongoose.Schema({
   rowSpan: { type: Number, default: 1 },
   columnSpan: { type: Number, default: 1 },
   children: Object,
-  category: { type: String, required: true },
-  datName: String,
-  datHash: String,
+  category: String,
   bgColor: { type: String, default: "#00D1FD" }
 });
 

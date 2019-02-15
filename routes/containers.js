@@ -15,7 +15,8 @@ module.exports = function(router) {
   // create new record
   router.post("/containers/new", userRequired, (req, res) => {
     let newRecord = new Container({
-      creator: req.body.creator,
+      createdBy: res.locals.currentUser._id || req.body.createdBy,
+      updatedBy: res.locals.currentUser._id || req.body.createdBy,
       parent: req.body.parent,
       lab: req.body.lab,
       name: req.body.name,
@@ -27,8 +28,6 @@ module.exports = function(router) {
       rowSpan: req.body.rowSpan,
       columnSpan: req.body.columnSpan,
       category: req.body.category,
-      datName: req.body.datName,
-      datHash: req.body.datHash,
       bgColor: req.body.bgColor
     });
     newRecord.save((error, data) => {
@@ -73,6 +72,8 @@ module.exports = function(router) {
       Container.findOne({ _id: req.params.recordId })
         .exec((err, record) => {
           if (err) { console.log(err); }
+          record.updatedAt = new Date();
+          record.updatedBy = res.locals.currentUser._id || req.body.updatedBy;
           record.name = req.body.name;
           record.lab = req.body.lab;
           record.parent = req.body.parent;
@@ -84,10 +85,7 @@ module.exports = function(router) {
           record.rowSpan = req.body.rowSpan;
           record.columnSpan = req.body.columnSpan;
           record.category = req.body.category;
-          record.datName = req.body.datName;
-          record.datHash = req.body.datHash;
           record.bgColor = req.body.bgColor;
-          record.updatedAt = new Date();
       
           record.save((error, updatedRecord) => {
             let jsonResponse;
