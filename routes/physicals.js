@@ -16,8 +16,9 @@ module.exports = function(router) {
   // create new record
   router.post("/physicals/new", userRequired, (req, res) => {
     let newRecord = new Physical({
+      createdBy: res.locals.currentUser._id || req.body.createdBy,
+      updatedBy: res.locals.currentUser._id || req.body.createdBy,
       virtual: req.body.virtual,
-      creator: res.locals.currentUser || req.body.creator,
       lab: req.body.lab,
       parent: req.body.parent,
       name: req.body.name,
@@ -63,74 +64,36 @@ module.exports = function(router) {
 
   // edit record
   router.post("/physicals/:recordId/edit", userRequired, (req, res) => {
-    if (process.env.NODE_ENV === 'test') {
-      Physical.findOne({ _id: req.params.recordId })
-        .exec((err, record) => {
-          record.virtual = req.body.virtual;
-          record.creator = req.body.creator;
-          record.name = req.body.name;
-          record.lab = req.body.lab;
-          record.parent = req.body.parent;
-          record.description = req.body.description;
-          record.row = req.body.row;
-          record.column = req.body.column;
-          record.rowSpan = req.body.rowSpan;
-          record.columnSpan = req.body.columnSpan;
-          record.datName = req.body.datName;
-          record.datHash = req.body.datHash;
-          record.updatedAt = new Date();
-      
-          record.save((error, updatedRecord) => {
-            let jsonResponse;
-            if (error) {
-              jsonResponse = {
-                message: "There was a problem saving the updated record.",
-                data: record
-              };
-            } else {
-              jsonResponse = {
-                message: "The updated record was successfully saved.",
-                data: updatedRecord
-              };
-            }
-            res.json(jsonResponse);
-          });
-        });
-    } else {
-      Physical.findOne({ _id: req.params.recordId })
-        .populate("creator")
-        .populate("virtual")
-        .populate("lab")
-        .populate("parent")
-        .exec((err, record) => {
-          record.virtual = req.body.virtual;
-          record.creator = req.body.creator;
-          record.name = req.body.name;
-          record.lab = req.body.lab;
-          record.parent = req.body.parent;
-          record.description = req.body.description;
-          record.locations = req.body.locations;
-          record.datName = req.body.datName;
-          record.datHash = req.body.datHash;
-          record.updatedAt = new Date();
-      
-          record.save((error, updatedRecord) => {
-            let jsonResponse;
-            if (error) {
-              jsonResponse = {
-                message: "There was a problem saving the updated record.",
-                data: record
-              };
-            } else {
-              jsonResponse = {
-                message: "The updated record was successfully saved.",
-                data: updatedRecord
-              };
-            }
-            res.json(jsonResponse);
-          });
-        });
-    }
+    Physical.findOne({ _id: req.params.recordId })
+    .exec((err, record) => {
+      record.updatedAt = new Date();
+      record.updatedBy = res.locals.currentUser._id || req.body.updatedBy;
+      record.virtual = req.body.virtual;
+      record.name = req.body.name;
+      record.lab = req.body.lab;
+      record.parent = req.body.parent;
+      record.description = req.body.description;
+      record.row = req.body.row;
+      record.column = req.body.column;
+      record.rowSpan = req.body.rowSpan;
+      record.columnSpan = req.body.columnSpan;
+  
+      record.save((error, updatedRecord) => {
+        let jsonResponse;
+        if (error) {
+          jsonResponse = {
+            message: "There was a problem saving the updated record.",
+            data: record
+          };
+        } else {
+          jsonResponse = {
+            message: "The updated record was successfully saved.",
+            data: updatedRecord
+          };
+        }
+        res.json(jsonResponse);
+      });
+    });
   });
 
   // show one record
