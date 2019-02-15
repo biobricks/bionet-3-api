@@ -4,16 +4,16 @@ const mongoose = require('mongoose');
 
 const modelSchema = mongoose.Schema({
   createdAt    : { type: String, default: new Date() },
+  createdBy    : { type: String, ref: "User", required: true },
   updatedAt    : { type: String, default: new Date() },
+  updatedBy    : { type: String, ref: "User" },
   name         : { type: String, required: true },
+  description  : String,
   rows         : { type: Number, default: 1, min: 1 },
   columns      : { type: Number, default: 1, min: 1 },
-  description  : String,
   children     : Object,
   users        : [{ type: String, ref: "User"}],
-  joinRequests : [{ type: String, ref: "User"}],
-  datName      : { type: String, default: "" },
-  datKey       : { type: String, default: "" }
+  joinRequests : [{ type: String, ref: "User"}]
 });
 
 

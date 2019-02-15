@@ -8,7 +8,6 @@ const userRequired = require("../modules/apiAccess").userRequired;
 const getPathToLab = require("../modules/mongoTree").getPathToLab;
 const fetchAll = require("../modules/fetch").fetchAll;
 const fetchOne = require("../modules/fetch").fetchOne;
-const checkForDat = require("../modules/dat").checkForDat;
 
 if (!process.env.JWT_SECRET) {
   require("../config/env.js");
@@ -16,10 +15,11 @@ if (!process.env.JWT_SECRET) {
 
 module.exports = function(router) {
   
-  // create new record
   router.post("/labs/new", userRequired, (req, res) => {
-    let users = res.locals.currentUser ? [`${res.locals.currentUser._id}`] : [`${req.body.creator}`];
+    let users = res.locals.currentUser ? [`${res.locals.currentUser._id}`] : [`${req.body.createdBy}`];
     let newRecord = new Lab({
+      createdBy: res.locals.currentUser._id,
+      updatedBy: res.locals.currentUser._id,
       name: req.body.name,
       description: req.body.description,
       columns: req.body.columns,
@@ -82,11 +82,10 @@ module.exports = function(router) {
       record.description = req.body.description;
       record.rows = req.body.rows;
       record.columns = req.body.columns;
-      record.datName = req.body.datName || record.datName;
-      record.datKey = req.body.datKey || record.datKey;
       record.users = req.body.users || record.users;
       record.joinRequests = req.body.joinRequests || record.joinRequests;
       record.updatedAt = new Date();
+      record.updatedBy = res.locals.currentUser._id;
       record.save((error, updatedRecord) => {
         let jsonResponse;
         if (error) {
@@ -105,13 +104,14 @@ module.exports = function(router) {
     });     
   });
 
-  // edit record
+  // edit membership
   router.post("/labs/:recordId/membership", userRequired, (req, res) => {
     Lab.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
-      record.users = req.body.users;
-      record.joinRequests = req.body.joinRequests;
+      record.users = req.body.users || record.users;
+      record.joinRequests = req.body.joinRequests || record.joinRequests;
       record.updatedAt = new Date();
+      record.updatedBy = res.locals.currentUser._id;
       record.save((error, updatedRecord) => {
         let jsonResponse;
         if (error) {
@@ -137,47 +137,33 @@ module.exports = function(router) {
   });
 
   // show one record
-  // ex. http://localhost:3001/api/v1/labs/5be539538a1ad7177722787f
-  router.get("/labs/:recordId", checkForDat, (req, res) => {
-    // if no dat found with key of :recordId
-    if (!res.locals.datFound) {
-      fetchOne(Lab, req.params.recordId)
-      .then((result) => {
-        let jsonResponse = {
-          message: "Success - data retrieved from Bionet Centralized Database",
-          error: {},
-          data: result
-        };
-        res.json(jsonResponse);
-      })
-      .catch((error) => {
-        let message;
-        if (error.name === 'CastError'){
-          message = `Record with _id ${error.value} not found`;
-        } else {
-          message = "An error occurred."
-        }
-        let jsonResponse = {
-          message,
-          error,
-          data: {}
-        };
-        res.json(jsonResponse);
-      });
-    // if dat was found with key of :recordId  
-    } else {
-      let message = "Success - data retrieved from Dat Peer To Peer Network";
+  router.get("/labs/:recordId", (req, res) => {
+    fetchOne(Lab, req.params.recordId)
+    .then((result) => {
+      let jsonResponse = {
+        message: "Success - data retrieved from Bionet Centralized Database",
+        error: {},
+        data: result
+      };
+      res.json(jsonResponse);
+    })
+    .catch((error) => {
+      let message;
+      if (error.name === 'CastError'){
+        message = `Record with _id ${error.value} not found`;
+      } else {
+        message = "An error occurred."
+      }
       let jsonResponse = {
         message,
         error,
-        data: res.locals.dat
+        data: {}
       };
-      res.json(jsonResponse);      
-    }  
+      res.json(jsonResponse);
+    });
   });
 
   // list all records
-  // ex. http://localhost:3001/api/v1/labs/
   router.get("/labs", (req, res) => {
     fetchAll(Lab)
     .then((result) => {
@@ -200,12 +186,3 @@ module.exports = function(router) {
 
 
 };
-
-
-async function getLabData(labId) {
-  try {
-
-  } catch (error) {
-
-  }
-}
