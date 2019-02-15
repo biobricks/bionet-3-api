@@ -13,15 +13,17 @@ module.exports = function(router) {
   // create new record
   router.post("/virtuals/new", (req, res) => {
     let newRecord = new Virtual({
-      creator: res.locals.currentUser || req.body.creator,
+      createdBy: res.locals.currentUser._id || req.body.createdBy,
+      updatedBy: res.locals.currentUser._id || req.body.createdBy,
       name: req.body.name,
       description: req.body.description,
+      isAvailable: req.body.isAvailable,
       provenance: req.body.provenance,
       genotype: req.body.genotype,
       sequence: req.body.sequence,
-      category: req.body.category,
-      datName: req.body.datName,
-      datHash: req.body.datHash
+      fgSubmitted: req.body.fgSubmitted,
+      fgStage: req.body.fgStage,
+      category: req.body.category
     });
     newRecord.save((error, data) => {
       let jsonResponse;
@@ -60,67 +62,35 @@ module.exports = function(router) {
 
   // edit record
   router.post("/virtuals/:recordId/edit", adminRequired, (req, res) => {
-    if (process.env.NODE_ENV === 'test') {
-      Virtual.findOne({ _id: req.params.recordId })
-        .exec((err, record) => {
-          record.creator = req.body.creator;
-          record.name = req.body.name;
-          record.description = req.body.description;
-          record.provenance = req.body.provenance;
-          record.genotype = req.body.genotype;
-          record.sequence = req.body.sequence;
-          record.category = req.body.category;
-          record.datName = req.body.datName;
-          record.datHash = req.body.datHash;
-          record.updatedAt = new Date();
-      
-          record.save((error, updatedRecord) => {
-            let jsonResponse;
-            if (error) {
-              jsonResponse = {
-                message: "There was a problem saving the updated record.",
-                data: record
-              };
-            } else {
-              jsonResponse = {
-                message: "The updated record was successfully saved.",
-                data: updatedRecord
-              };
-            }
-            res.json(jsonResponse);
-          });
-        });
-    } else {
-      Virtual.findOne({ _id: req.params.recordId })
-        .exec((err, record) => {
-          record.creator = req.body.creator;
-          record.name = req.body.name;
-          record.description = req.body.description;
-          record.provenance = req.body.provenance;
-          record.genotype = req.body.genotype;
-          record.sequence = req.body.sequence;
-          record.category = req.body.category;
-          record.datName = req.body.datName;
-          record.datHash = req.body.datHash;
-          record.updatedAt = new Date();
-      
-          record.save((error, updatedRecord) => {
-            let jsonResponse;
-            if (error) {
-              jsonResponse = {
-                message: "There was a problem saving the updated record.",
-                data: record
-              };
-            } else {
-              jsonResponse = {
-                message: "The updated record was successfully saved.",
-                data: updatedRecord
-              };
-            }
-            res.json(jsonResponse);
-          });
-        });
-    }
+    Virtual.findOne({ _id: req.params.recordId })
+    .exec((err, record) => {
+      record.updatedAt = new Date();
+      record.updatedBy = res.locals.currentUser._id || req.body.updatedBy;
+      record.name = req.body.name;
+      record.description = req.body.description;
+      record.provenance = req.body.provenance;
+      record.genotype = req.body.genotype;
+      record.sequence = req.body.sequence;
+      record.category = req.body.category;
+      record.isAvailable = req.body.isAvailable || record.isAvailable;
+      record.fgSubmitted = req.body.fgSubmitted || record.fgSubmitted;
+      record.fgStage = req.body.fgStage || record.fgStage;
+      record.save((error, updatedRecord) => {
+        let jsonResponse;
+        if (error) {
+          jsonResponse = {
+            message: "There was a problem saving the updated record.",
+            data: record
+          };
+        } else {
+          jsonResponse = {
+            message: "The updated record was successfully saved.",
+            data: updatedRecord
+          };
+        }
+        res.json(jsonResponse);
+      });
+    });
   });
 
   // show one record
