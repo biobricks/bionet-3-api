@@ -33,7 +33,8 @@
     "coveralls": "^3.0.2",
     "mocha": "^5.2.0",
     "mocha-lcov-reporter": "^1.3.0",
-    "nyc": "^13.1.0",
+    "nodemon": "^1.18.10",
+    "nyc": "^13.3.0",
     "shortid": "^2.2.13"
   },
   "dependencies": {
