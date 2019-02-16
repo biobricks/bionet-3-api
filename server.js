@@ -88,6 +88,9 @@ require("./routes/static.js")(router);
 // authentication routes
 require("./routes/auth.js")(router, passport);
 
+// reset password routes
+require("./routes/reset.js")(router);
+
 // user routes
 require("./routes/users.js")(router, passport);
 
