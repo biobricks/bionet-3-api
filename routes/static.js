@@ -5,7 +5,7 @@ module.exports = function(router) {
 	// landing page route
 	router.get("/", (req, res) => {
 		let jsonResponse = {
-			message: "Welcome to the BioNet API."
+			message: "Welcome to the Bionet API."
 		};
 		res.json(jsonResponse);
 	});

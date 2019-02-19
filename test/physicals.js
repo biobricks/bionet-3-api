@@ -39,7 +39,8 @@ describe('Physicals', () => {
   describe('/POST /physicals/new', () => {
     it('it should not POST a physical without virtual field', (done) => {
       let physical = {
-        creator: "exampleUser",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         lab: "exampleLab",
         parent: "exampleContainer",
         row: 1,
@@ -47,9 +48,7 @@ describe('Physicals', () => {
         rowSpan: 3,
         columnSpan: 4,
         name: "foo",
-        description: "bar baz quay",
-        datName: "fooDat",
-        datHash: "fooHash" 
+        description: "bar baz quay"
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -64,7 +63,7 @@ describe('Physicals', () => {
           done();
         });
     });
-    it('it should not POST a physical without creator field', (done) => {
+    it('it should not POST a physical without createdBy field', (done) => {
       let physical = {
         virtual: "exampleVirtual",
         lab: "exampleLab",
@@ -74,9 +73,7 @@ describe('Physicals', () => {
         rowSpan: 3,
         columnSpan: 4,
         name: "foo",
-        description: "bar baz quay",
-        datName: "fooDat",
-        datHash: "fooHash" 
+        description: "bar baz quay"
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -86,24 +83,23 @@ describe('Physicals', () => {
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
-          res.body.error.errors.should.have.property('creator');
-          res.body.error.errors.creator.should.have.property('kind').eql('required');
+          res.body.error.errors.should.have.property('createdBy');
+          res.body.error.errors.createdBy.should.have.property('kind').eql('required');
           done();
         });
     });
     it('it should not POST a physical without name field', (done) => {
       let physical = {
         virtual: "exampleVirtual",
-        creator: "exampleUser",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         lab: "exampleLab",
         parent: "exampleContainer",
         row: 1,
         column: 2,
         rowSpan: 3,
         columnSpan: 4,
-        description: "bar baz quay",
-        datName: "fooDat",
-        datHash: "fooHash" 
+        description: "bar baz quay" 
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -121,17 +117,16 @@ describe('Physicals', () => {
     it('it should successfully POST a physical', (done) => {
       let physical = {
         virtual: "exampleVirtual",
-        creator: "exampleUser",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         lab: "exampleLab",
         parent: "exampleContainer",
-        name: "foo",
+        name: "Foo",
         description: "bar baz quay",
         row: 1,
         column: 2,
         rowSpan: 3,
-        columnSpan: 4,
-        datName: "fooDat",
-        datHash: "fooHash" 
+        columnSpan: 4
       };
       chai.request(server)
         .post('/api/v1/physicals/new')
@@ -143,7 +138,8 @@ describe('Physicals', () => {
           res.body.should.have.property('data');
           res.body.data.should.be.a('object');
           res.body.data.should.have.property('virtual');
-          res.body.data.should.have.property('creator');
+          res.body.data.should.have.property('createdBy');
+          res.body.data.should.have.property('updatedBy');
           res.body.data.should.have.property('name');
           res.body.data.should.have.property('description');
           res.body.data.should.have.property('lab');
@@ -152,8 +148,6 @@ describe('Physicals', () => {
           res.body.data.should.have.property('column');
           res.body.data.should.have.property('rowSpan');
           res.body.data.should.have.property('columnSpan');
-          res.body.data.should.have.property('datName');
-          res.body.data.should.have.property('datHash');
           done();
         });
     });    
@@ -163,7 +157,8 @@ describe('Physicals', () => {
     it('it should GET a physical by id', (done) => {
       let physical = new Physical({
         virtual: "exampleVirtual",
-        creator: "exampleUser",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         lab: "exampleLab",
         parent: "exampleContainer",
         row: 1,
@@ -171,19 +166,16 @@ describe('Physicals', () => {
         rowSpan: 3,
         columnSpan: 4,
         name: "foo",
-        description: "bar baz quay",
-        datName: "fooDat",
-        datHash: "fooHash"    
+        description: "bar baz quay"   
       });
-      physical.save((error, physical) => {
+      physical.save((error, savedPhysical) => {
         if (error) { 
           console.log(error); 
           done();
         } else {
-          let route = `/api/v1/physicals/${physical._id}`;
+          let route = `/api/v1/physicals/${savedPhysical._id}`;
           chai.request(server)
             .get(route)
-            .send(physical)
             .end((err, res) => {
               if (err) { console.log(err) }
               res.should.have.status(200);
@@ -192,7 +184,8 @@ describe('Physicals', () => {
               res.body.should.have.property('data');
               res.body.data.should.be.a('object');
               res.body.data.should.have.property('virtual');
-              res.body.data.should.have.property('creator');
+              res.body.data.should.have.property('createdBy');
+              res.body.data.should.have.property('updatedBy');
               res.body.data.should.have.property('name');
               res.body.data.should.have.property('description');
               res.body.data.should.have.property('parent');
@@ -200,8 +193,6 @@ describe('Physicals', () => {
               res.body.data.should.have.property('column');
               res.body.data.should.have.property('rowSpan');
               res.body.data.should.have.property('columnSpan');
-              res.body.data.should.have.property('datName');
-              res.body.data.should.have.property('datHash');
               done();
             });
           }    
@@ -213,7 +204,8 @@ describe('Physicals', () => {
     it('it should UPDATE physical by id', (done) => {
       let physical = new Physical({
         virtual: "exampleVirtual",
-        creator: "exampleUser",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         lab: "exampleLab",
         row: 1,
         column: 2,
@@ -224,14 +216,14 @@ describe('Physicals', () => {
         datName: "fooDat",
         datHash: "fooHash"    
       });
-      physical.save((error, physical) => {
+      physical.save((error, savedPhysical) => {
         if (error) { console.log(error) }
-        let route = `/api/v1/physicals/${physical._id}/edit`;
+        let route = `/api/v1/physicals/${savedPhysical._id}/edit`;
         chai.request(server)
           .post(route)
           .send({
             virtual: "exampleVirtual2",
-            creator: "exampleUser2",
+            updatedBy: "exampleUser2",
             lab: "exampleLab2",
             parent: "exampleContainer2",
             row: 2,
@@ -239,9 +231,7 @@ describe('Physicals', () => {
             rowSpan: 4,
             columnSpan: 5,
             name: "foo2",
-            description: "bar baz quay2",
-            datName: "fooDat2",
-            datHash: "fooHash2"       
+            description: "bar baz quay2"     
           })
           .end((err, res) => {
             if (err) { console.log(err) }
@@ -251,7 +241,7 @@ describe('Physicals', () => {
             res.body.should.have.property('data');
             res.body.data.should.be.a('object');
             res.body.data.should.have.property('virtual').eql('exampleVirtual2');
-            res.body.data.should.have.property('creator').eql('exampleUser2');
+            res.body.data.should.have.property('updatedBy').eql('exampleUser2');
             res.body.data.should.have.property('name').eql('foo2');
             res.body.data.should.have.property('description').eql('bar baz quay2');
             res.body.data.should.have.property('lab').eql('exampleLab2');
@@ -260,8 +250,6 @@ describe('Physicals', () => {
             res.body.data.should.have.property('column').eql(3);
             res.body.data.should.have.property('rowSpan').eql(4);
             res.body.data.should.have.property('columnSpan').eql(5);
-            res.body.data.should.have.property('datName').eql('fooDat2');
-            res.body.data.should.have.property('datHash').eql('fooHash2');
             done();
           });
       });
@@ -272,7 +260,8 @@ describe('Physicals', () => {
     it('it should DELETE physical by id', (done) => {
       let physical = new Physical({
         virtual: "exampleVirtual",
-        creator: "exampleUser",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         lab: "exampleLab",
         parent: "exampleContainer",
         row: 2,
@@ -280,12 +269,10 @@ describe('Physicals', () => {
         rowSpan: 4,
         columnSpan: 5,
         name: "foo",
-        description: "bar baz quay",
-        datName: "fooDat",
-        datHash: "fooHash"    
+        description: "bar baz quay"    
       });
-      physical.save((error, physical) => {
-        let route = `/api/v1/physicals/${physical._id}/remove`;
+      physical.save((error, savedPhysical) => {
+        let route = `/api/v1/physicals/${savedPhysical._id}/remove`;
         chai.request(server)
           .post(route)
           .end((err, res) => {

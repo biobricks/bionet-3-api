@@ -16,8 +16,8 @@ module.exports = function(router) {
   // create new record
   router.post("/physicals/new", userRequired, (req, res) => {
     let newRecord = new Physical({
-      createdBy: res.locals.currentUser._id || req.body.createdBy,
-      updatedBy: res.locals.currentUser._id || req.body.createdBy,
+      createdBy: req.body.createdBy,
+      updatedBy: req.body.createdBy,
       virtual: req.body.virtual,
       lab: req.body.lab,
       parent: req.body.parent,
@@ -31,12 +31,14 @@ module.exports = function(router) {
       let jsonResponse;
       if (error) {
         jsonResponse = {
+          success: false,
           message: "There was a problem saving the new record.",
           data: {},
           error
         };
       } else {
         jsonResponse = {
+          success: true,
           message: "The new record was successfully saved.",
           data: data,
           error: {}
@@ -51,10 +53,12 @@ module.exports = function(router) {
     Physical.findOneAndDelete({_id: req.params.recordId}).exec(error => {
       if (error) {
         jsonResponse = {
+          success: false,
           message: "There was a problem removing the record."
         };
       } else {
         jsonResponse = {
+          success: true,
           message: "The record was successfully removed."
         };
       }
@@ -67,26 +71,28 @@ module.exports = function(router) {
     Physical.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
       record.updatedAt = new Date();
-      record.updatedBy = res.locals.currentUser._id || req.body.updatedBy;
-      record.virtual = req.body.virtual;
-      record.name = req.body.name;
-      record.lab = req.body.lab;
-      record.parent = req.body.parent;
-      record.description = req.body.description;
-      record.row = req.body.row;
-      record.column = req.body.column;
-      record.rowSpan = req.body.rowSpan;
-      record.columnSpan = req.body.columnSpan;
+      record.updatedBy = req.body.updatedBy;
+      record.virtual = req.body.virtual || record.virtual;
+      record.name = req.body.name || record.name;
+      record.lab = req.body.lab || record.lab;
+      record.parent = req.body.parent || record.parent;
+      record.description = req.body.description || record.description;
+      record.row = req.body.row || record.row;
+      record.column = req.body.column || record.column;
+      record.rowSpan = req.body.rowSpan || record.rowSpan;
+      record.columnSpan = req.body.columnSpan || record.columnSpan;
   
       record.save((error, updatedRecord) => {
         let jsonResponse;
         if (error) {
           jsonResponse = {
+            success: false,
             message: "There was a problem saving the updated record.",
             data: record
           };
         } else {
           jsonResponse = {
+            success: true,
             message: "The updated record was successfully saved.",
             data: updatedRecord
           };
@@ -98,29 +104,53 @@ module.exports = function(router) {
 
   // show one record
   router.get("/physicals/:recordId", (req, res) => {
-    fetchOne(Physical, req.params.recordId)
-    .then((result) => {
-      let jsonResponse = {
-        message: "Success",
-        error: {},
-        data: result
-      };
-      res.json(jsonResponse);
-    })
-    .catch((error) => {
-      console.log(error);
-      let message;
-      if (error.name === 'CastError'){
-        message = `Record with _id ${error.value} not found`;
+    const query = process.env.NODE_ENV === 'test' ? (
+      Physical.findOne({_id: req.params.recordId}) 
+    ) : ( 
+      Physical
+      .findOne({_id: req.params.recordId})
+      .populate({
+        path: 'parent',
+        select: '_id name'
+      })
+      .populate({
+        path: 'createdBy',
+        select: '_id username'
+      })
+      .populate({
+        path: 'updatedBy',
+        select: '_id username'
+      })
+      .populate({
+        path: 'lab',
+        select: '_id name'
+      })
+      .populate('virtual')
+    );
+
+    query.exec((error, result) => {
+      if (error) {
+        if (error.name === 'CastError'){
+          message = `Record with _id ${error.value} not found`;
+        } else {
+          message = "An error occurred."
+        }
+        let jsonResponse = {
+          success: false,
+          message,
+          error,
+          data: {}
+        };
+        res.json(jsonResponse);
       } else {
-        message = "An error occurred."
+        let jsonResponse = {
+          success: true,
+          message: "Success",
+          error: {},
+          data: result
+        };
+        res.json(jsonResponse);
       }
-      let jsonResponse = {
-        message,
-        error,
-        data: {}
-      };
-      res.json(jsonResponse);
     });
   });
 
@@ -129,6 +159,7 @@ module.exports = function(router) {
     fetchAll(Physical)
     .then((result) => {
       let jsonResponse = {
+        success: true,
         message: "Success",
         error: {},
         data: result
@@ -137,6 +168,7 @@ module.exports = function(router) {
     })
     .catch((error) => {
       let jsonResponse = {
+        success: false,
         message: "There was an error",
         error,
         data: []

@@ -13,8 +13,8 @@ module.exports = function(router) {
   // create new record
   router.post("/virtuals/new", (req, res) => {
     let newRecord = new Virtual({
-      createdBy: res.locals.currentUser._id || req.body.createdBy,
-      updatedBy: res.locals.currentUser._id || req.body.createdBy,
+      createdBy: req.body.createdBy,
+      updatedBy: req.body.createdBy,
       name: req.body.name,
       description: req.body.description,
       isAvailable: req.body.isAvailable,
@@ -46,7 +46,8 @@ module.exports = function(router) {
 
   // remove record
   router.post("/virtuals/:recordId/remove", adminRequired, (req, res) => {
-    Virtual.findOneAndDelete(req.params.recordId).exec(error => {
+    Virtual.findOneAndDelete(req.params.recordId)
+    .exec(error => {
       if (error) {
         jsonResponse = {
           message: "There was a problem removing the record."
@@ -65,16 +66,16 @@ module.exports = function(router) {
     Virtual.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
       record.updatedAt = new Date();
-      record.updatedBy = res.locals.currentUser._id || req.body.updatedBy;
-      record.name = req.body.name;
-      record.description = req.body.description;
-      record.provenance = req.body.provenance;
-      record.genotype = req.body.genotype;
-      record.sequence = req.body.sequence;
-      record.category = req.body.category;
-      record.isAvailable = req.body.isAvailable || record.isAvailable;
-      record.fgSubmitted = req.body.fgSubmitted || record.fgSubmitted;
-      record.fgStage = req.body.fgStage || record.fgStage;
+      record.updatedBy = req.body.updatedBy;
+      record.name = req.body.name || record.name;
+      record.description = req.body.description || record.description;
+      record.provenance = req.body.provenance || record.provenance;
+      record.genotype = req.body.genotype || record.genotype;
+      record.sequence = req.body.sequence || record.sequence;
+      record.category = req.body.category || record.category;
+      record.isAvailable = req.body.isAvailable === true;
+      record.fgSubmitted = req.body.fgSubmitted === true;
+      record.fgStage = req.body.fgStage;
       record.save((error, updatedRecord) => {
         let jsonResponse;
         if (error) {
@@ -87,6 +88,7 @@ module.exports = function(router) {
             message: "The updated record was successfully saved.",
             data: updatedRecord
           };
+          //console.log('success', JSON.stringify(jsonResponse, null, 2));
         }
         res.json(jsonResponse);
       });
@@ -95,29 +97,44 @@ module.exports = function(router) {
 
   // show one record
   router.get("/virtuals/:recordId", (req, res) => {
-    fetchOne(Virtual, req.params.recordId)
-    .then((result) => {
-      let jsonResponse = {
-        message: "Success",
-        error: {},
-        data: result
-      };
-      res.json(jsonResponse);
-    })
-    .catch((error) => {
-      console.log(error);
-      let message;
-      if (error.name === 'CastError'){
-        message = `Record with _id ${error.value} not found`;
+    const query = process.env.NODE_ENV === 'test' ? (
+      Virtual.findOne({_id: req.params.recordId}) 
+    ) : ( 
+      Virtual
+      .findOne({_id: req.params.recordId})
+      .populate({
+        path: 'createdBy',
+        select: '_id username'
+      })
+      .populate({
+        path: 'updatedBy',
+        select: '_id username'
+      })
+    );
+
+    query.exec((error, result) => {
+      if (error) {
+        if (error.name === 'CastError'){
+          message = `Record with _id ${error.value} not found`;
+        } else {
+          message = "An error occurred."
+        }
+        let jsonResponse = {
+          success: false,
+          message,
+          error,
+          data: {}
+        };
+        res.json(jsonResponse);
       } else {
-        message = "An error occurred."
+        let jsonResponse = {
+          success: true,
+          message: "Success",
+          error: {},
+          data: result
+        };
+        res.json(jsonResponse);
       }
-      let jsonResponse = {
-        message,
-        error,
-        data: {}
-      };
-      res.json(jsonResponse);
     });
   });
 

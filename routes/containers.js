@@ -7,16 +7,15 @@ const userRequired = require("../modules/apiAccess").userRequired;
 const fetchAll = require("../modules/fetch").fetchAll;
 const fetchOne = require("../modules/fetch").fetchOne;
 
-if (!process.env.JWT_SECRET) {
-  require("../config/env.js");
-}
+require("../config/env.js");
+
 
 module.exports = function(router) {
   // create new record
   router.post("/containers/new", userRequired, (req, res) => {
     let newRecord = new Container({
-      createdBy: res.locals.currentUser._id || req.body.createdBy,
-      updatedBy: res.locals.currentUser._id || req.body.createdBy,
+      createdBy: req.body.createdBy,
+      updatedBy: req.body.createdBy,
       parent: req.body.parent,
       lab: req.body.lab,
       name: req.body.name,
@@ -34,6 +33,7 @@ module.exports = function(router) {
       let jsonResponse;
       if (error) {
         jsonResponse = {
+          success: false,
           message: "There was a problem saving the new record.",
           data: {},
           error
@@ -41,6 +41,7 @@ module.exports = function(router) {
         res.status(401).json(jsonResponse);
       } else {
         jsonResponse = {
+          success: true,
           message: "The new record was successfully saved.",
           data: data,
           error: {}
@@ -55,10 +56,12 @@ module.exports = function(router) {
     Container.findOneAndDelete({_id: req.params.recordId}).exec(error => {
       if (error) {
         jsonResponse = {
+          success: false,
           message: "There was a problem removing the record."
         };
       } else {
         jsonResponse = {
+          success: true,
           message: "The record was successfully removed."
         };
       }
@@ -68,114 +71,97 @@ module.exports = function(router) {
 
   // edit record
   router.post("/containers/:recordId/edit", userRequired, (req, res) => {
-    if (process.env.NODE_ENV === 'test') {
-      Container.findOne({ _id: req.params.recordId })
-        .exec((err, record) => {
-          if (err) { console.log(err); }
-          record.updatedAt = new Date();
-          record.updatedBy = res.locals.currentUser._id || req.body.updatedBy;
-          record.name = req.body.name;
-          record.lab = req.body.lab;
-          record.parent = req.body.parent;
-          record.description = req.body.description;
-          record.rows = req.body.rows;
-          record.columns  = req.body.columns;
-          record.row = req.body.row;
-          record.column = req.body.column;
-          record.rowSpan = req.body.rowSpan;
-          record.columnSpan = req.body.columnSpan;
-          record.category = req.body.category;
-          record.bgColor = req.body.bgColor;
-      
-          record.save((error, updatedRecord) => {
-            let jsonResponse;
-            if (error) {
-              jsonResponse = {
-                message: "There was a problem saving the updated record.",
-                data: record
-              };
-            } else {
-              jsonResponse = {
-                message: "The updated record was successfully saved.",
-                data: updatedRecord
-              };
-            }
-            res.json(jsonResponse);
-          });
+    Container.findOne({ _id: req.params.recordId })
+      .exec((err, record) => {
+        if (err) { console.log(err); }
+        record.updatedAt = new Date();
+        record.updatedBy = req.body.updatedBy;
+        record.name = req.body.name;
+        record.lab = req.body.lab;
+        record.parent = req.body.parent;
+        record.description = req.body.description;
+        record.rows = req.body.rows;
+        record.columns  = req.body.columns;
+        record.row = req.body.row;
+        record.column = req.body.column;
+        record.rowSpan = req.body.rowSpan;
+        record.columnSpan = req.body.columnSpan;
+        record.category = req.body.category;
+        record.bgColor = req.body.bgColor;
+    
+        record.save((error, updatedRecord) => {
+          let jsonResponse;
+          if (error) {
+            jsonResponse = {
+              success: false,
+              message: "There was a problem saving the updated record.",
+              data: record
+            };
+          } else {
+            jsonResponse = {
+              success: true,
+              message: "The updated record was successfully saved.",
+              data: updatedRecord
+            };
+          }
+          res.json(jsonResponse);
         });
-    } else {
-      Container.findOne({ _id: req.params.recordId })
-        .populate("parent")
-        .exec((err, record) => {
-          record.name = req.body.name;
-          record.parent = req.body.parent;
-          record.description = req.body.description;
-          record.rows = req.body.rows;
-          record.columns = req.body.columns;
-          record.row = req.body.row;
-          record.column = req.body.column;
-          record.rowSpan = req.body.rowSpan;
-          record.columnSpan = req.body.columnSpan;
-          record.category = req.body.category;
-          record.datName = req.body.datName;
-          record.datHash = req.body.datHash;
-          record.bgColor = req.body.bgColor;
-          record.updatedAt = new Date();
-      
-          record.save((error, updatedRecord) => {
-            let jsonResponse;
-            if (error) {
-              jsonResponse = {
-                message: "There was a problem saving the updated record.",
-                data: record
-              };
-            } else {
-              jsonResponse = {
-                message: "The updated record was successfully saved.",
-                data: updatedRecord
-              };
-            }
-            res.json(jsonResponse);
-          });
-        });
-    }
+      });
   });
 
   // show one record
-  // ex. http://localhost:3001/api/v1/containers/5bea189dbaed03330b2c2145
   router.get("/containers/:recordId", (req, res) => {
-    fetchOne(Container, req.params.recordId)
-    .then((result) => {
-      let jsonResponse = {
-        message: "Success",
-        error: {},
-        data: result
-      };
-      res.json(jsonResponse);
-    })
-    .catch((error) => {
-      console.log(error);
-      let message;
-      if (error.name === 'CastError'){
-        message = `Record with _id ${error.value} not found`;
+    const query = process.env.NODE_ENV === 'test' ? (
+      Container.findOne({_id: req.params.recordId}) 
+    ) : ( 
+      Container
+      .findOne({_id: req.params.recordId})
+      .populate({
+        path: 'parent',
+        select: '_id name'
+      })
+      .populate({
+        path: 'createdBy',
+        select: '_id username'
+      })
+      .populate({
+        path: 'lab',
+        select: '_id name'
+      })
+    );
+
+    query.exec((error, result) => {
+      if (error) {
+        if (error.name === 'CastError'){
+          message = `Record with _id ${error.value} not found`;
+        } else {
+          message = "An error occurred."
+        }
+        let jsonResponse = {
+          success: false,
+          message,
+          error,
+          data: {}
+        };
+        res.json(jsonResponse);
       } else {
-        message = "An error occurred."
+        let jsonResponse = {
+          success: true,
+          message: "Success",
+          error: {},
+          data: result
+        };
+        res.json(jsonResponse);
       }
-      let jsonResponse = {
-        message,
-        error,
-        data: {}
-      };
-      res.json(jsonResponse);
     });
   });
 
   // list all containers
-  // ex. http://localhost:3001/api/v1/containers
   router.get("/containers", (req, res) => {
     fetchAll(Container)
     .then((result) => {
       let jsonResponse = {
+        success: true,
         message: "Success",
         error: {},
         data: result
@@ -184,6 +170,7 @@ module.exports = function(router) {
     })
     .catch((error) => {
       let jsonResponse = {
+        success: false,
         message: "There was an error",
         error,
         data: []

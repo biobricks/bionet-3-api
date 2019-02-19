@@ -11,24 +11,6 @@ const chaiHttp = require('chai-http');
 const server = require('../server');
 const should = chai.should();
 
-const exampleContainer = {
-  creator: "abc",
-  parent: "123",
-  lab: "examplelab",
-  name: "foo",
-  description: "bar baz quay",
-  rows: 1,
-  columns: 2,
-  row: 3,
-  column: 4,
-  rowSpan: 5,
-  columnSpan: 6,
-  category: "Freezer",
-  datName: "fooDat",
-  datHash: "fooHash",
-  bgColor: "#cccccc" 
-};
-
 chai.use(chaiHttp);
 
 describe('Containers', () => {
@@ -59,11 +41,12 @@ describe('Containers', () => {
 
   describe('/POST /containers/new', () => {
 
-    it('it should not POST a container without creator field', (done) => {
+    it('it should not POST a container without createdBy field', (done) => {
       let container = {
-        parent: "123",
-        lab: "examplelab",
-        name: "foo",
+        updatedBy: 'demoUserId',
+        parent: "labId",
+        lab: "labId",
+        name: "Foo",
         description: "bar baz quay",
         rows: 1,
         columns: 2,
@@ -72,9 +55,7 @@ describe('Containers', () => {
         rowSpan: 5,
         columnSpan: 6,
         category: "Freezer",
-        datName: "fooDat",
-        datHash: "fooHash",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc" 
       };
       chai.request(server)
         .post('/api/v1/containers/new')
@@ -84,16 +65,17 @@ describe('Containers', () => {
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
-          res.body.error.errors.should.have.property('creator');
-          res.body.error.errors.creator.should.have.property('kind').eql('required');
+          res.body.error.errors.should.have.property('createdBy');
+          res.body.error.errors.createdBy.should.have.property('kind').eql('required');
           done();
         });
     });
     it('it should not POST a container without name field', (done) => {
       let container = {
-        creator: "foobarbaz",
-        parent: "123",
-        lab: "examplelab",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
+        parent: "labId",
+        lab: "labId",
         description: "bar baz quay",
         rows: 1,
         columns: 2,
@@ -102,9 +84,7 @@ describe('Containers', () => {
         rowSpan: 5,
         columnSpan: 6,
         category: "Freezer",
-        datName: "fooDat",
-        datHash: "fooHash",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc" 
       };
       chai.request(server)
         .post('/api/v1/containers/new')
@@ -119,99 +99,23 @@ describe('Containers', () => {
           done();
         });
     });
-    it('it should not POST a container without rows field', (done) => {
+    it('it should successfully POST a container', (done) => {
       let container = {
-        creator: "foobarbaz",
-        parent: "123",
-        lab: "examplelab",
-        name: "foo",
-        description: "bar baz quay",
-        columns: 2,
-        row: 3,
-        column: 4,
-        rowSpan: 5,
-        columnSpan: 6,
-        category: "Freezer",
-        datName: "fooDat",
-        datHash: "fooHash",
-        bgColor: "#cccccc"
-      };
-      chai.request(server)
-        .post('/api/v1/containers/new')
-        .send(container)
-        .end((err, res) => {
-          res.should.have.status(401);
-          res.body.should.be.a('object');
-          res.body.should.have.property('error');
-          res.body.error.should.have.property('errors');
-          res.body.error.errors.should.have.property('rows');
-          res.body.error.errors.rows.should.have.property('kind').eql('required');
-          done();
-        });
-    });
-    it('it should not POST a container without rows field', (done) => {
-      let container = {
-        creator: "foobarbaz",
-        parent: "123",
-        lab: "examplelab",
-        name: "foo",
-        description: "bar baz quay",
-        columns: 2,
-        row: 3,
-        column: 4,
-        rowSpan: 5,
-        columnSpan: 6,
-        category: "Freezer",
-        datName: "fooDat",
-        datHash: "fooHash",
-        bgColor: "#cccccc" 
-      };
-      chai.request(server)
-        .post('/api/v1/containers/new')
-        .send(container)
-        .end((err, res) => {
-          res.should.have.status(401);
-          res.body.should.be.a('object');
-          res.body.should.have.property('error');
-          res.body.error.should.have.property('errors');
-          res.body.error.errors.should.have.property('rows');
-          res.body.error.errors.rows.should.have.property('kind').eql('required');
-          done();
-        });
-    });
-    it('it should not POST a container without columns field', (done) => {
-      let container = {
-        creator: "foobarbaz",
-        parent: "123",
-        lab: "examplelab",
-        name: "foo",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
+        parent: "labId",
+        lab: "labId",
+        name: "Foo",
         description: "bar baz quay",
         rows: 1,
+        columns: 2,
         row: 3,
         column: 4,
         rowSpan: 5,
         columnSpan: 6,
         category: "Freezer",
-        datName: "fooDat",
-        datHash: "fooHash",
-        bgColor: "#cccccc" 
+        bgColor: "#cccccc"
       };
-      chai.request(server)
-        .post('/api/v1/containers/new')
-        .send(container)
-        .end((err, res) => {
-          res.should.have.status(401);
-          res.body.should.be.a('object');
-          res.body.should.have.property('error');
-          res.body.error.should.have.property('errors');
-          res.body.error.errors.should.have.property('columns');
-          res.body.error.errors.columns.should.have.property('kind').eql('required');
-          done();
-        });
-    });  
-    it('it should successfully POST a container', (done) => {
-      let container = exampleContainer;
-      container.name = shortid.generate();
       chai.request(server)
         .post('/api/v1/containers/new')
         .send(container)
@@ -221,7 +125,8 @@ describe('Containers', () => {
           res.body.should.have.property('message').eql('The new record was successfully saved.');
           res.body.should.have.property('data');
           res.body.data.should.be.a('object');
-          res.body.data.should.have.property('creator');
+          res.body.data.should.have.property('createdBy');
+          res.body.data.should.have.property('updatedBy');
           res.body.data.should.have.property('createdAt');
           res.body.data.should.have.property('updatedAt');
           res.body.data.should.have.property('lab');
@@ -235,8 +140,6 @@ describe('Containers', () => {
           res.body.data.should.have.property('rowSpan');
           res.body.data.should.have.property('columnSpan');
           res.body.data.should.have.property('category');
-          res.body.data.should.have.property('datName');
-          res.body.data.should.have.property('datHash'); 
           res.body.data.should.have.property('bgColor');          
           done();
         });
@@ -246,59 +149,50 @@ describe('Containers', () => {
   describe('/GET /containers/:recordId', () => {
     it('it should GET a container by id', (done) => {
       let container = new Container({
-        creator: "foobarbaz",
-        parent: "123",
-        lab: "fooLab",
-        name: "foo",
-        description: "bar baz quay",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
+        parent: "labId",
+        lab: "labId",
+        name: "Foo",
+        description: "example description",
         rows: 1,
         columns: 2,
-        rows: 1,
         row: 3,
         column: 4,
         rowSpan: 5,
         columnSpan: 6,
         category: "Freezer",
-        datName: "fooDat",
-        datHash: "fooHash",
         bgColor: "#cccccc"
       });
-      container.save((error, container) => {
-        if (error) { 
-          console.log(error); 
-          done();
-        } else {
-          let route = `/api/v1/containers/${container._id}`;
-          chai.request(server)
-            .get(route)
-            .send(container)
-            .end((err, res) => {
-              if (err) { console.log(err) }
-              res.should.have.status(200);
-              res.body.should.be.a('object');
-              res.body.should.have.property('message').eql('Success');
-              res.body.should.have.property('data');
-              res.body.data.should.be.a('object');
-              res.body.data.should.have.property('creator');
-              res.body.data.should.have.property('createdAt');
-              res.body.data.should.have.property('updatedAt');              
-              res.body.data.should.have.property('parent');
-              res.body.data.should.have.property('lab');
-              res.body.data.should.have.property('name');
-              res.body.data.should.have.property('description');
-              res.body.data.should.have.property('rows');
-              res.body.data.should.have.property('columns');
-              res.body.data.should.have.property('row');
-              res.body.data.should.have.property('column');
-              res.body.data.should.have.property('rowSpan');
-              res.body.data.should.have.property('columnSpan');
-              res.body.data.should.have.property('category');
-              res.body.data.should.have.property('datName');
-              res.body.data.should.have.property('datHash');
-              res.body.data.should.have.property('bgColor');
-              done();
-            });
-          }    
+      container.save((error, savedContainer) => {
+        let route = `/api/v1/containers/${savedContainer._id}`;
+        chai.request(server)
+          .get(route)
+          .end((err, res) => {
+            if (err) { console.log(err) }
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message').eql('Success');
+            res.body.should.have.property('data');
+            res.body.data.should.be.a('object');
+            res.body.data.should.have.property('createdBy');
+            res.body.data.should.have.property('updatedBy');
+            res.body.data.should.have.property('createdAt');
+            res.body.data.should.have.property('updatedAt');             
+            res.body.data.should.have.property('parent');
+            res.body.data.should.have.property('lab');
+            res.body.data.should.have.property('name');
+            res.body.data.should.have.property('description');
+            res.body.data.should.have.property('rows');
+            res.body.data.should.have.property('columns');
+            res.body.data.should.have.property('row');
+            res.body.data.should.have.property('column');
+            res.body.data.should.have.property('rowSpan');
+            res.body.data.should.have.property('columnSpan');
+            res.body.data.should.have.property('category');
+            res.body.data.should.have.property('bgColor');          
+            done();
+          });
       });
     });
   });
@@ -306,11 +200,12 @@ describe('Containers', () => {
   describe('/POST /containers/:recordId/edit', () => {
     it('it should UPDATE container by id', (done) => {
       let container = new Container({
-        creator: "foobarbaz",
-        parent: "123",
-        lab: "fooLab",
-        name: "foos",
-        description: "bar baz quay",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
+        parent: "labId",
+        lab: "labId",
+        name: "Foo",
+        description: "example description",
         rows: 1,
         columns: 2,
         row: 3,
@@ -318,31 +213,27 @@ describe('Containers', () => {
         rowSpan: 5,
         columnSpan: 6,
         category: "Freezer",
-        datName: "fooDat",
-        datHash: "fooHash",
-        bgColor: "#dddddd"      
+        bgColor: "#cccccc"  
       });
-      container.save((error, container) => {
+      container.save((error, savedContainer) => {
         if (error) { console.log(error) }
-        let route = `/api/v1/containers/${container._id}/edit`;
+        let route = `/api/v1/containers/${savedContainer._id}/edit`;
         chai.request(server)
           .post(route)
           .send({
-            creator: "foobarbaz",
-            parent: "1234",
-            name: "foobars",
-            lab: "fooLabs",
-            description: "bar baz quay foo",
-            rows: 5,
-            columns: 6,
+            updatedBy: 'demoUserId',
+            name: 'Foo2',
+            lab: 'labId2',
+            parent: 'labId2',
+            description: 'updated description',
+            rows: 2,
+            columns: 3,
             row: 4,
             column: 5,
             rowSpan: 6,
             columnSpan: 7,
-            category: "Well",
-            datName: "fooDatData",
-            datHash: "SADHJKASHDKJASKDKD",
-            bgColor: "#cccccc"   
+            category: 'Well',
+            bgColor: '#dddddd'   
           })
           .end((err, res) => {
             if (err) { console.log(err) }
@@ -351,26 +242,22 @@ describe('Containers', () => {
             res.body.should.have.property('message').eql('The updated record was successfully saved.');
             res.body.should.have.property('data');
             res.body.data.should.be.a('object');
-            res.body.data.should.have.property('creator').eql('foobarbaz');
+            res.body.data.should.have.property('createdBy');
+            res.body.data.should.have.property('updatedBy');
             res.body.data.should.have.property('createdAt');
             res.body.data.should.have.property('updatedAt');
-            res.body.data.should.have.property('parent').eql('1234');
-            res.body.data.should.have.property('lab').eql('fooLabs');
-            res.body.data.should.have.property('name').eql('foobars');
-            res.body.data.should.have.property('description').eql('bar baz quay foo');
-            res.body.data.should.have.property('rows').eql(5);
-            res.body.data.should.have.property('columns').eql(6);
+            res.body.data.should.have.property('parent').eql('labId2');
+            res.body.data.should.have.property('lab').eql('labId2');
+            res.body.data.should.have.property('name').eql('Foo2');
+            res.body.data.should.have.property('description').eql('updated description');
+            res.body.data.should.have.property('rows').eql(2);
+            res.body.data.should.have.property('columns').eql(3);
             res.body.data.should.have.property('row').eql(4);
             res.body.data.should.have.property('column').eql(5);
             res.body.data.should.have.property('rowSpan').eql(6);
             res.body.data.should.have.property('columnSpan').eql(7);
-            res.body.data.should.have.property('column');
-            res.body.data.should.have.property('rowSpan');
-            res.body.data.should.have.property('columnSpan');
             res.body.data.should.have.property('category').eql('Well');
-            res.body.data.should.have.property('datName').eql('fooDatData');
-            res.body.data.should.have.property('datHash').eql('SADHJKASHDKJASKDKD');
-            res.body.data.should.have.property('bgColor').eql('#cccccc');
+            res.body.data.should.have.property('bgColor').eql('#dddddd');
             done();
           });
       });
@@ -380,21 +267,20 @@ describe('Containers', () => {
   describe('/POST /containers/:recordId/remove', () => {
     it('it should DELETE container by id', (done) => {
       let container = new Container({
-        creator: "foobarbaz",
-        parent: "123",
-        lab: "fooLabs",
-        name: "foo",
-        description: "bar baz quay",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
+        parent: "labId",
+        lab: "labId",
+        name: "Foo",
+        description: "example description",
         rows: 1,
         columns: 2,
-        row: 4,
-        column: 5,
-        rowSpan: 6,
-        columnSpan: 7,
+        row: 3,
+        column: 4,
+        rowSpan: 5,
+        columnSpan: 6,
         category: "Freezer",
-        datName: "fooDatData",
-        datHash: "SADHJKASHDKJASKDKD",
-        bgColor: "#cccccc"
+        bgColor: "#cccccc"  
       });
       container.save((error, container) => {
         let route = `/api/v1/containers/${container._id}/remove`;

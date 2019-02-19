@@ -37,16 +37,37 @@ describe('Labs', () => {
   });
 
   describe('/POST /labs/new', () => {
-    it('it should not POST a lab without name field', (done) => {
+    it('it should not POST a lab without createdBy field', (done) => {
       let lab = {
-        description: "bar baz quay",
+        name: 'Foo',
+        description: 'bar baz quay',
         users: []
       };
       chai.request(server)
         .post('/api/v1/labs/new')
         .send(lab)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(401);
+          res.body.should.be.a('object');
+          res.body.should.have.property('error');
+          res.body.error.should.have.property('errors');
+          res.body.error.errors.should.have.property('createdBy');
+          res.body.error.errors.createdBy.should.have.property('kind').eql('required');
+          done();
+        });
+    });    
+    it('it should not POST a lab without name field', (done) => {
+      let lab = {
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
+        description: 'bar baz quay',
+        users: ['demoUserId']
+      };
+      chai.request(server)
+        .post('/api/v1/labs/new')
+        .send(lab)
+        .end((err, res) => {
+          res.should.have.status(401);
           res.body.should.be.a('object');
           res.body.should.have.property('error');
           res.body.error.should.have.property('errors');
@@ -57,7 +78,9 @@ describe('Labs', () => {
     });
     it('it should successfully POST a lab', (done) => {
       let lab = {
-        name: "Foo",
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
+        name: "New Foo",
         description: "bar baz quay",
         users: [],
         joinRequests: []
@@ -77,8 +100,6 @@ describe('Labs', () => {
           res.body.data.should.have.property('joinRequests');
           res.body.data.should.have.property('rows');
           res.body.data.should.have.property('columns');
-          res.body.data.should.have.property('datName');
-          res.body.data.should.have.property('datKey');
           done();
         });
     });            
@@ -87,15 +108,17 @@ describe('Labs', () => {
   describe('/GET /labs/:recordId', () => {
     it('it should GET a lab by id', (done) => {
       let lab = new Lab({
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         name: "Foo",
         description: "bar baz quay",
-        users: []
+        users: [],
+        joinRequests: []
       });
       lab.save((error, lab) => {
         let route = `/api/v1/labs/${lab._id}`;
         chai.request(server)
           .get(route)
-          .send(lab)
           .end((err, res) => {
             if (err) { console.log(err) }
             res.should.have.status(200);
@@ -107,9 +130,7 @@ describe('Labs', () => {
             res.body.data.should.have.property('description');
             res.body.data.should.have.property('users');
             res.body.data.should.have.property('rows');
-            res.body.data.should.have.property('columns');
-            res.body.data.should.have.property('datName');
-            res.body.data.should.have.property('datKey');            
+            res.body.data.should.have.property('columns');           
             done();
           });
       });
@@ -119,11 +140,19 @@ describe('Labs', () => {
   describe('/POST /labs/:recordId/edit', () => {
     it('it should UPDATE lab by id', (done) => {
       let lab = new Lab({
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         name: "Foo",
         description: "bar baz quay",
-        users: []
+        users: [],
+        joinRequests: []
       });
       lab.save((error, lab) => {
+        if (error) {
+          console.log('save error', error);
+        } else {
+          //console.log('save success', lab);
+        }
         let route = `/api/v1/labs/${lab._id}/edit`;
         chai.request(server)
           .post(route)
@@ -132,12 +161,10 @@ describe('Labs', () => {
             description: "bar baz quay2",
             users: [],
             rows: 2,
-            columns: 2,
-            datName: "Foo",
-            datKey: "FooBarBaz"          
+            columns: 2,          
           })
           .end((err, res) => {
-            if (err) { console.log(err) }
+            if (err) { console.log('post error', err) }
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('message');
@@ -147,9 +174,7 @@ describe('Labs', () => {
             res.body.data.should.have.property('description').eql("bar baz quay2");
             res.body.data.should.have.property('users');
             res.body.data.should.have.property('rows').eql(2);
-            res.body.data.should.have.property('columns').eql(2);
-            res.body.data.should.have.property('datName').eql("Foo");
-            res.body.data.should.have.property('datKey').eql("FooBarBaz");            
+            res.body.data.should.have.property('columns').eql(2);          
             done();
           });
       });
@@ -159,9 +184,12 @@ describe('Labs', () => {
   describe('/POST /labs/:recordId/remove', () => {
     it('it should DELETE lab by id', (done) => {
       let lab = new Lab({
+        createdBy: 'demoUserId',
+        updatedBy: 'demoUserId',
         name: "Foo",
         description: "bar baz quay",
-        users: []
+        users: [],
+        joinRequests: []
       });
       lab.save((error, lab) => {
         let route = `/api/v1/labs/${lab._id}/remove`;

@@ -1,9 +1,11 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+require("../config/env.js");
 
 module.exports = {
   adminRequired: (req, res, next) => {
     if (process.env.NODE_ENV === "test") {
+      res.locals.currentUser = { _id: req.body.createdBy }
       next();
     } else if (!req.token) {
       res.status(401).json({

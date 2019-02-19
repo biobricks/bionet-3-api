@@ -16,35 +16,35 @@ if (!process.env.JWT_SECRET) {
 module.exports = function(router) {
   
   router.post("/labs/new", userRequired, (req, res) => {
-    let users = res.locals.currentUser ? [`${res.locals.currentUser._id}`] : [`${req.body.createdBy}`];
     let newRecord = new Lab({
-      createdBy: res.locals.currentUser._id || req.body.createdBy,
-      updatedBy: res.locals.currentUser._id || req.body.createdBy,
+      createdBy: req.body.createdBy,
+      updatedBy: req.body.createdBy,
       name: req.body.name,
       description: req.body.description,
       columns: req.body.columns,
       rows: req.body.rows,
-      users,
+      users: [`${req.body.createdBy}`],
       joinRequests: []
     });
     newRecord.save((error, data) => {
       let jsonResponse;
       if (error) {
         jsonResponse = {
+          success: false,
           message: "There was a problem saving the new record.",
           data: {},
           error
         };
-        res.json(jsonResponse);
+        res.status(401).json(jsonResponse);
       } else {
         jsonResponse = {
+          success: true,
           message: "The new record was successfully saved.",
           data: data,
           error: {}
         };
         res.json(jsonResponse);
       }
-      
     });
   });
 
@@ -63,10 +63,12 @@ module.exports = function(router) {
     Lab.findOneAndDelete({_id: req.params.recordId}).exec(error => {
       if (error) {
         jsonResponse = {
+          success: false,
           message: "There was a problem removing the record."
         };
       } else {
         jsonResponse = {
+          success: true,
           message: "The record was successfully removed."
         };
       }
@@ -78,6 +80,7 @@ module.exports = function(router) {
   router.post("/labs/:recordId/edit", userRequired, (req, res) => {
     Lab.findOne({ _id: req.params.recordId })
     .exec((err, record) => {
+      const currentUserExists = res.locals.currentUser && res.locals.currentUser._id;
       record.name = req.body.name;
       record.description = req.body.description;
       record.rows = req.body.rows;
@@ -85,16 +88,18 @@ module.exports = function(router) {
       record.users = req.body.users || record.users;
       record.joinRequests = req.body.joinRequests || record.joinRequests;
       record.updatedAt = new Date();
-      record.updatedBy = res.locals.currentUser._id;
+      record.updatedBy = req.body.updatedBy;
       record.save((error, updatedRecord) => {
         let jsonResponse;
         if (error) {
           jsonResponse = {
+            success: false,
             message: "There was a problem saving the updated record.",
             data: record
           };
         } else {
           jsonResponse = {
+            success: true,
             message: "The updated record was successfully saved.",
             data: updatedRecord
           };
@@ -116,6 +121,7 @@ module.exports = function(router) {
         let jsonResponse;
         if (error) {
           jsonResponse = {
+            success: false,
             message: "There was a problem saving the updated record.",
             data: record
           };
@@ -126,6 +132,7 @@ module.exports = function(router) {
           .populate("joinRequests")
           .exec((err, populatedRecord) => {
             jsonResponse = {
+              success: true,
               message: "The updated record was successfully saved.",
               data: populatedRecord
             };
@@ -141,6 +148,7 @@ module.exports = function(router) {
     fetchOne(Lab, req.params.recordId)
     .then((result) => {
       let jsonResponse = {
+        success: true,
         message: "Success - data retrieved from Bionet Centralized Database",
         error: {},
         data: result
@@ -155,6 +163,7 @@ module.exports = function(router) {
         message = "An error occurred."
       }
       let jsonResponse = {
+        success: false,
         message,
         error,
         data: {}
@@ -168,6 +177,7 @@ module.exports = function(router) {
     fetchAll(Lab)
     .then((result) => {
       let jsonResponse = {
+        success: true,
         message: "Success",
         error: {},
         data: result
@@ -176,6 +186,7 @@ module.exports = function(router) {
     })
     .catch((error) => {
       let jsonResponse = {
+        success: false,
         message: "There was an error",
         error,
         data: []

@@ -20,7 +20,7 @@ describe("Static", () => {
           res.should.have.status(200);
           res.body.should.be.a("object");
           res.body.should.have.property("message");
-          res.body.message.should.be.a("string").eql("Welcome to the BioNet API.");
+          res.body.message.should.be.a("string").eql("Welcome to the Bionet API.");
           done();
         });
     });

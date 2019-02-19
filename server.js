@@ -4,12 +4,8 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const bearerToken = require("express-bearer-token");
 const jwt = require("jsonwebtoken");
+require("./config/env.js");
 
-// load the config file if no database unique resource identifier is present
-/* istanbul ignore else  */
-if (!process.env.DB_URI) {
-  require("./config/env.js");
-}
 
 // set port to the environment variable settings or 3001 if none exist
 const port = process.env.PORT || 3001;
@@ -20,9 +16,13 @@ let databaseConnectionString = `mongodb://${process.env.DB_USERNAME}:${
 }@`;
 
 /* istanbul ignore else  */
-if (process.env.NODE_ENV === "test") {
+if (process.env.NODE_ENV === 'test') {
   databaseConnectionString += `${process.env.DB_TEST_URI}`;
+} else if (process.env.NODE_ENV === 'development'){
+  // development
+  databaseConnectionString += `${process.env.DB_DEV_URI}`;
 } else {
+  // production
   databaseConnectionString += `${process.env.DB_URI}`;
 }
 
