@@ -111,49 +111,76 @@ module.exports = function(router) {
 
   // show one record
   router.get("/containers/:recordId", (req, res) => {
-    const query = process.env.NODE_ENV === 'test' ? (
-      Container.findOne({_id: req.params.recordId}) 
-    ) : ( 
-      Container
-      .findOne({_id: req.params.recordId})
-      .populate({
-        path: 'parent',
-        select: '_id name'
-      })
-      .populate({
-        path: 'createdBy',
-        select: '_id username'
-      })
-      .populate({
-        path: 'lab',
-        select: '_id name'
-      })
-    );
+    // const query = process.env.NODE_ENV === 'test' ? (
+    //   Container.findOne({_id: req.params.recordId}) 
+    // ) : ( 
+    //   Container
+    //   .findOne({_id: req.params.recordId})
+    //   .populate({
+    //     path: 'parent',
+    //     select: '_id name'
+    //   })
+    //   .populate({
+    //     path: 'createdBy',
+    //     select: '_id username'
+    //   })
+    //   .populate({
+    //     path: 'lab',
+    //     select: '_id name'
+    //   })
+    // );
 
-    query.exec((error, result) => {
-      if (error) {
-        if (error.name === 'CastError'){
-          message = `Record with _id ${error.value} not found`;
-        } else {
-          message = "An error occurred."
-        }
-        let jsonResponse = {
-          success: false,
-          message,
-          error,
-          data: {}
-        };
-        res.json(jsonResponse);
+    // query.exec((error, result) => {
+    //   if (error) {
+    //     if (error.name === 'CastError'){
+    //       message = `Record with _id ${error.value} not found`;
+    //     } else {
+    //       message = "An error occurred."
+    //     }
+    //     let jsonResponse = {
+    //       success: false,
+    //       message,
+    //       error,
+    //       data: {}
+    //     };
+    //     res.json(jsonResponse);
+    //   } else {
+    //     let jsonResponse = {
+    //       success: true,
+    //       message: "Success",
+    //       error: {},
+    //       data: result
+    //     };
+    //     res.json(jsonResponse);
+    //   }
+    // });
+    let jsonResponse;
+    fetchOne(Container, req.params.recordId)
+    .then((result) => {
+      jsonResponse = {
+        success: true,
+        message: "Success",
+        error: {},
+        data: result
+      };
+      res.status(200).json(jsonResponse);      
+    })  
+    .catch((error) => {
+      console.log(error);
+      if (error.name === 'CastError'){
+        message = `Record with _id ${error.value} not found`;
       } else {
-        let jsonResponse = {
-          success: true,
-          message: "Success",
-          error: {},
-          data: result
-        };
-        res.json(jsonResponse);
+        message = "An error occurred."
       }
+      jsonResponse = {
+        success: false,
+        message,
+        error,
+        data: {}
+      };
+      res.status(401).json(jsonResponse);
     });
+
   });
 
   // list all containers

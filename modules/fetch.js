@@ -3,81 +3,24 @@ const Lab = require("../models/Lab");
 const Container = require("../models/Container");
 const Physical = require("../models/Physical");
 const Virtual = require("../models/Virtual");
+require("../config/env.js");
 
 const mongoFetch = {
   fetchAll: async (Model) => {
-    let results;
-    switch (Model) {
-      case Lab:
-        results = await Model.find().populate({
-          path: 'users',
-          select: '_id username'
-        }).populate({
-          path: 'joinRequests',
-          select: '_id username'
-        });
-        break;
-      case Container:
-        results = await Model.find()
-        .populate({
-          path: 'parent',
-          select: '_id name'
-        })
-        .populate({
-          path: 'createdBy',
-          select: '_id username'
-        })
-        .populate({
-          path: 'lab',
-          select: '_id name'
-        });
-        break;
-      case Physical:
-        results = await Model.find()
-        .populate({
-          path: 'parent',
-          select: '_id name'
-        })
-        .populate({
-          path: 'creator',
-          select: '_id username'
-        })
-        .populate({
-          path: 'lab',
-          select: '_id name'
-        })
-        .populate('virtual');  
-        break; 
-      case Virtual:
-        results = await Model.find().populate({
-          path: 'creator',
-          select: '_id username'
-        });  
-        break;    
-      default:
-        results = null;
-    }
-    return results;
-  },
-  fetchOne: async (Model, id) => {
-    let isTestMode = process.env.NODE_ENV === 'test';
-    let result;
-    let allContainers = await getAll(Container);
-    let allPhysicals = await getAll(Physical);
-    if (!isTestMode) {
+    try {
+      let results;
       switch (Model) {
         case Lab:
-          result = await Model.findOne({_id: id}).populate({
+          results = await Model.find().populate({
             path: 'users',
             select: '_id username'
           }).populate({
             path: 'joinRequests',
             select: '_id username'
           });
-          result['children'] = await getChildren(result, allContainers, allPhysicals);
           break;
         case Container:
-          result = await Model.findOne({_id: id})
+          results = await Model.find()
           .populate({
             path: 'parent',
             select: '_id name'
@@ -90,10 +33,9 @@ const mongoFetch = {
             path: 'lab',
             select: '_id name'
           });
-          result['children'] = await getChildren(result, allContainers, allPhysicals);
-          break;  
+          break;
         case Physical:
-          result = await Model.findOne({_id: id})
+          results = await Model.find()
           .populate({
             path: 'parent',
             select: '_id name'
@@ -107,21 +49,126 @@ const mongoFetch = {
             select: '_id name'
           })
           .populate('virtual');  
-          break;  
+          break; 
         case Virtual:
-          result = await Model.findOne({_id: id}).populate({
+          results = await Model.find().populate({
             path: 'creator',
             select: '_id username'
           });  
+          break;    
+        default:
+          results = null;
+      }
+      return results;
+    } catch (error) {
+      console.log('fetchAll.error', error);
+    }  
+  },
+  fetchOne: async (Model, id) => {
+    try {
+      let isTestMode = process.env.NODE_ENV === 'test';
+      let result, allContainers, allPhysicals;
+
+      switch (Model) {
+        case Lab:
+          if (isTestMode) {
+            result = await Model.findOne({_id: id});
+          } else {        
+            result = await Model.findOne({_id: id})
+            .populate({
+              path: 'createdBy',
+              select: '_id username'
+            })
+            .populate({
+              path: 'updatedBy',
+              select: '_id username'
+            })
+            .populate({
+              path: 'users',
+              select: '_id username'
+            }).populate({
+              path: 'joinRequests',
+              select: '_id username'
+            });
+            allContainers = await getAll(Container);
+            allPhysicals = await getAll(Physical);
+            result['children'] = await getChildren(result, allContainers, allPhysicals);
+          }
+          break;
+        case Container:
+          if (isTestMode) {
+            result = await Model.findOne({_id: id});
+          } else {
+            result = await Model
+            .findOne({_id: id})
+            .populate({
+              path: 'parent',
+              select: '_id name'
+            })
+            .populate({
+              path: 'createdBy',
+              select: '_id username'
+            })
+            .populate({
+              path: 'updatedBy',
+              select: '_id username'
+            })
+            .populate({
+              path: 'lab',
+              select: '_id name'
+            });
+            allContainers = await getAll(Container);
+            allPhysicals = await getAll(Physical);
+            result['children'] = await getChildren(result, allContainers, allPhysicals);
+          }
+          break;  
+        case Physical:
+          if (isTestMode) {
+            result = await Model.findOne({_id: id});
+          } else {
+            result = await Model.findOne({_id: id})
+            .populate({
+              path: 'parent',
+              select: '_id name'
+            })
+            .populate({
+              path: 'createdBy',
+              select: '_id username'
+            })
+            .populate({
+              path: 'updatedBy',
+              select: '_id username'
+            })
+            .populate({
+              path: 'lab',
+              select: '_id name'
+            })
+            .populate('virtual'); 
+          }   
+          break;  
+        case Virtual:
+          if (isTestMode) {
+            result = await Model.findOne({_id: id});
+          } else {
+            result = await Model.findOne({_id: id})
+            .populate({
+              path: 'createdBy',
+              select: '_id username'
+            })
+            .populate({
+              path: 'updatedBy',
+              select: '_id username'
+            }); 
+          } 
           break;      
         default:
           result = null;
       }
-    } else {
-      // test mode without populate
-      result = await Model.findOne({_id: id});
+
+      return result;
+    } catch (error) {
+      console.log('fetchOne.error', error);
     }  
-    return result;
   }
 };
 
