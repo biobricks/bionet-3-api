@@ -3,10 +3,8 @@ const User = require('../models/User');
 const userRequired = require('../modules/apiAccess').userRequired;
 const shortid = require('shortid');
 const sgMail = require('@sendgrid/mail');
+require("../config/env.js");
 
-if (!process.env.JWT_SECRET) {
-  require("../config/env.js");
-}
 
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
@@ -111,7 +109,7 @@ router.post('/reset-password', (req, res) => {
             });
           } else {
             const domainPrefix = process.env.SSL_ENABLED === true ? 'https://' : 'http://';
-            const domain = process.env.DOMAIN;
+            const domain = process.env.DOMAIN === 'localhost:3001' ? 'example.com' : process.env.DOMAIN;
             const url = `${domainPrefix}${domain}`;
             const appName = process.env.APP_NAME;
             const messageText = `Hello ${currentUser.username},\nIf you recently requested an account password change please visit ${url}/password-reset/verify and enter in the code '${resetToken}', otherwise disregard this message.\n - The ${appName} Team`;
@@ -125,6 +123,7 @@ router.post('/reset-password', (req, res) => {
               text: messageText,
               html: messageHtml
             };
+            console.log('sending message:', msg);
             sgMail.send(msg);
             res.status(200).json({
               success: true,
