@@ -22,6 +22,7 @@ module.exports = {
       return cb(null, response);
     })
     .catch((error) => {
+      response.success = false;
       response.message = "There was an error.";
       response.error = error;
       return cb(error, response);
@@ -36,22 +37,23 @@ async function getPath(labId, itemId, Model) {
   try {
     // reset global
     pathGlobal = [];
-    // first is lab
-    let lab = await Lab.findOne({'_id': labId}).populate('users');
-    pathGlobal.push(lab);
 
     let item = await Model.findOne({'_id': itemId});
     
     if (item.parent !== null) {
-      console.log('populating parent containers');  
+      //console.log('populating parent containers');  
       await populateParentContainers(item.parent);
     }
+    // lab at beginning of array
+    let lab = await Lab.findOne({'_id': labId}).populate('users');
+    pathGlobal.unshift(lab);
+    
     // last is item
     pathGlobal.push(item);
     //console.log(lab);
     return pathGlobal;
   } catch (error) {
-    console.log(error);
+    console.log('Get Path Error', error);
     return [];
   }  
 }
@@ -59,13 +61,15 @@ async function getPath(labId, itemId, Model) {
 async function populateParentContainers(id) {
   try {
     let item = await Container.findOne({'_id': id});
-    pathGlobal.push(item);
+    //console.log('adding item to breadcrumbs', item);
+    pathGlobal.unshift(item);
     if (item.parent !== null){
       await populateParentContainers(item.parent); 
     } else {
       return null;
     }
   } catch (error) {
+    //console.log('populate error', error);
     return null;
   }  
 }
