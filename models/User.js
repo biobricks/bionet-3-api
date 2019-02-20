@@ -13,25 +13,7 @@ const userSchema = mongoose.Schema({
 	name: { type: String, required: true },
 	email: { type: String, required: true, index: { unique: true }},
 	imageUrl: String,
-	settings: {
-		display: { 
-			mode: { type: String, default: 'simple' }
-		},
-		privacy: {
-			username: {
-				public : { type: Boolean, default: false },
-				members: { type: Boolean, default: false }
-			},
-			name: {
-				public : { type: Boolean, default: true },
-				members: { type: Boolean, default: true }
-			},
-			email: {
-				public : { type: Boolean, default: true },
-				members: { type: Boolean, default: true }
-			}
-		}
-	}
+	resetToken: { type: String, default: ""}
 });
 
 userSchema.methods.comparePassword = function(password, callback) {
